@@ -14,9 +14,14 @@
   "engines": {
     "node": ">=22.6.0"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "packageManager": "yarn@1.22.22"
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@babel/*",
+        "expo-modules-*",
+        "typescript"
+      ]
+    }
+  },
+  "packageManager": "pnpm@9.7.1"
 }
