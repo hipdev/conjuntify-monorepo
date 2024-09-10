@@ -1,23 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
+
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-export default function Component() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+export default function LoginPage() {
+  const { signIn } = useAuthActions();
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would typically handle the login logic
-    console.log("Login attempt with:", email, password);
-    // For demo purposes, let's simulate a login error
-    setError("Invalid email or password");
-  };
+  const { toast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
@@ -27,7 +25,27 @@ export default function Component() {
             Log in to your account
           </h2>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={(event) => {
+            event.preventDefault();
+            setSubmitting(true);
+
+            const formData = new FormData(event.currentTarget);
+            formData.append("flow", "signIn");
+
+            signIn("password", formData)
+              .then(() => {
+                router.push("/dashboard");
+              })
+              .catch((error) => {
+                console.error(error);
+                const title = "Datos incorrectos";
+                toast({ title, variant: "destructive" });
+                setSubmitting(false);
+              });
+          }}
+        >
           <div className="space-y-4">
             <div>
               <Label htmlFor="email" className="text-gray-300">
@@ -40,8 +58,6 @@ export default function Component() {
                 autoComplete="email"
                 required
                 className="mt-1 bg-gray-800 text-white border-gray-700 focus:border-gray-600 focus:ring-gray-600"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -55,13 +71,11 @@ export default function Component() {
                 autoComplete="current-password"
                 required
                 className="mt-1 bg-gray-800 text-white border-gray-700 focus:border-gray-600 focus:ring-gray-600"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
 
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {/* {error && <p className="text-red-400 text-sm">{error}</p>} */}
 
           <Button
             type="submit"

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 import "./globals.css";
 import { ConvexClientProvider } from "@/components/providers/convex-client-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Conjuntify",
@@ -23,6 +24,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={cn(GeistMono.variable, GeistSans.variable)}>
           <ConvexClientProvider>{children}</ConvexClientProvider>
+          <Toaster />
         </body>
       </html>
     </ConvexAuthNextjsServerProvider>
