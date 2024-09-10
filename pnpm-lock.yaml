@@ -132,6 +132,12 @@ importers:
 
   apps/web:
     dependencies:
+      '@auth/core':
+        specifier: ^0.34.2
+        version: 0.34.2
+      '@convex-dev/auth':
+        specifier: ^0.0.65
+        version: 0.0.65(convex@1.15.0(react-dom@19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614))(next@15.0.0-rc.0(babel-plugin-react-compiler@0.0.0-experimental-7449567-20240905)(react-dom@19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614)
       '@packages/backend':
         specifier: workspace:*
         version: link:../../packages/backend
@@ -7514,6 +7520,25 @@ snapshots:
       server-only: 0.0.1
     optionalDependencies:
       react: 18.3.1
+    transitivePeerDependencies:
+      - '@simplewebauthn/browser'
+      - '@simplewebauthn/server'
+      - nodemailer
+
+  '@convex-dev/auth@0.0.65(convex@1.15.0(react-dom@19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614))(next@15.0.0-rc.0(babel-plugin-react-compiler@0.0.0-experimental-7449567-20240905)(react-dom@19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614)':
+    dependencies:
+      '@auth/core': 0.31.0
+      arctic: 1.9.2
+      convex: 1.15.0(react-dom@19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614)
+      jose: 5.8.0
+      jwt-decode: 4.0.0
+      lucia: 3.2.0
+      oslo: 1.2.1
+      path-to-regexp: 7.1.0
+      server-only: 0.0.1
+    optionalDependencies:
+      next: 15.0.0-rc.0(babel-plugin-react-compiler@0.0.0-experimental-7449567-20240905)(react-dom@19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614))(react@19.0.0-rc-fb9a90fa48-20240614)
+      react: 19.0.0-rc-fb9a90fa48-20240614
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
       - '@simplewebauthn/server'

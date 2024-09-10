@@ -12,6 +12,9 @@
     "standalone-script": "node ./src/scripts/standalone-script.js"
   },
   "dependencies": {
+    "@auth/core": "^0.34.2",
+    "@convex-dev/auth": "^0.0.65",
+    "@packages/backend": "workspace:*",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@radix-ui/react-hover-card": "^1.1.1",
@@ -29,7 +32,6 @@
     "react": "^19.0.0-rc-a03254bc-20240905",
     "react-dom": "^19.0.0-rc-a03254bc-20240905",
     "react-hotkeys-hook": "^4.5.1",
-    "@packages/backend": "workspace:*",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.2",
