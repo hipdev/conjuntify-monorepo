@@ -1,25 +1,48 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { useMutation } from 'convex/react'
+import { api } from '@packages/backend/convex/_generated/api'
 
 export default function Component() {
-  const [tipoCondominio, setTipoCondominio] = useState('casas')
-  const [amenidades, setAmenidades] = useState<string[]>([])
+  const formRef = useRef<HTMLFormElement>(null)
+  const createCondo = useMutation(api.condos.createCondo)
 
-  const handleAmenidadChange = (amenidad: string) => {
-    setAmenidades((prev) =>
-      prev.includes(amenidad) ? prev.filter((a) => a !== amenidad) : [...prev, amenidad]
-    )
-  }
-  const handleRegistrarOtro = () => {
-    // Aquí iría la lógica para registrar otro condominio
-    console.log('Registrar otro condominio')
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!formRef.current) return
+
+    const formData = new FormData(formRef.current)
+
+    const condoData = {
+      name: formData.get('name') as string,
+      address: formData.get('address') as string,
+      city: formData.get('city') as string,
+      state: formData.get('state') as string,
+      country: formData.get('country') as string,
+      zipCode: formData.get('zipCode') as string,
+      type: formData.get('type') as 'houses' | 'apartments',
+      numberUnits: parseInt(formData.get('numberUnits') as string),
+      amenities: Array.from(formData.getAll('amenities')) as string[],
+      uniqueCode: formData.get('uniqueCode') as string
+    }
+
+    console.log(condoData, 'formData')
+
+    try {
+      const newCondoId = await createCondo(condoData)
+      console.log('New condo created with ID:', newCondoId)
+      // Handle success (e.g., show a success message, redirect, etc.)
+    } catch (error) {
+      console.error('Error creating condo:', error)
+      // Handle error (e.g., show an error message)
+    }
   }
 
   return (
@@ -27,19 +50,20 @@ export default function Component() {
       <div className='mb-8 flex items-center justify-between'>
         <h1 className='text-3xl font-bold'>Tu Condominio</h1>
         <Button
-          onClick={handleRegistrarOtro}
+          onClick={() => {}}
           className='bg-white text-black hover:bg-gray-200 focus-visible:ring-gray-400'
         >
           Registrar otro condominio
         </Button>
       </div>
-      <form className='mx-auto max-w-4xl space-y-8'>
+      <form ref={formRef} onSubmit={handleSubmit} className='mx-auto max-w-4xl space-y-8'>
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
           <div className='space-y-4'>
             <div>
               <Label htmlFor='nombre'>Nombre del Condominio</Label>
               <Input
                 id='nombre'
+                name='name'
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -47,38 +71,39 @@ export default function Component() {
               <Label htmlFor='direccion'>Dirección</Label>
               <Input
                 id='direccion'
+                name='address'
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
-
             <div>
-              <Label htmlFor='ciudad'>Ciudad</Label>
+              <Label htmlFor='city'>Ciudad</Label>
               <Input
-                id='ciudad'
+                id='city'
+                name='city'
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
             <div>
               <Label htmlFor='departamento'>Departamento</Label>
               <Input
-                id='departamento'
+                id='state'
+                name='state'
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
             <div>
-              <Label htmlFor='pais'>País</Label>
+              <Label htmlFor='country'>País</Label>
               <Input
-                id='pais'
+                id='country'
+                name='country'
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
-
             <div>
-              <Label htmlFor='numeroUnidades'>
-                Número de {tipoCondominio === 'casas' ? 'Casas' : 'Apartamentos'}
-              </Label>
+              <Label htmlFor='numberUnits'>Número de casas/aptos</Label>
               <Input
-                id='numeroUnidades'
+                id='numberUnits'
+                name='numberUnits'
                 type='number'
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
@@ -86,63 +111,52 @@ export default function Component() {
           </div>
           <div className='space-y-4'>
             <div>
-              <Label htmlFor='codigoPostal'>Código Postal</Label>
+              <Label htmlFor='zipCode'>Código Postal</Label>
               <Input
-                id='codigoPostal'
+                id='zipCode'
+                name='zipCode'
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
             <div>
-              <Label htmlFor='codigoUnico'>Código Único</Label>
+              <Label htmlFor='uniqueCode'>Código Único</Label>
               <Input
-                id='codigoUnico'
+                id='uniqueCode'
+                name='uniqueCode'
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
             <div>
-              <Label htmlFor='celular'>Celular</Label>
+              <Label htmlFor='phone'>Celular</Label>
               <Input
-                id='celular'
+                id='phone'
+                name='phone'
                 type='tel'
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
-
-            {tipoCondominio === 'apartamentos' && (
-              <div>
-                <Label htmlFor='numeroTorres'>Número de Torres</Label>
-                <Input
-                  id='numeroTorres'
-                  type='number'
-                  className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
-                />
-              </div>
-            )}
             <div>
               <Label>Tipo de Condominio</Label>
-              <RadioGroup
-                defaultValue='casas'
-                className='flex space-x-4'
-                onValueChange={setTipoCondominio}
-              >
+              <RadioGroup name='type' defaultValue='houses' className='flex space-x-4'>
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem
-                    value='casas'
-                    id='casas'
+                    value='houses'
+                    id='houses'
                     className='border-white focus-visible:ring-gray-400'
                   />
-                  <Label htmlFor='casas'>Casas</Label>
+                  <Label htmlFor='houses'>Casas</Label>
                 </div>
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem
-                    value='apartamentos'
-                    id='apartamentos'
+                    value='apartments'
+                    id='apartments'
                     className='border-white focus-visible:ring-gray-400'
                   />
-                  <Label htmlFor='apartamentos'>Apartamentos</Label>
+                  <Label htmlFor='apartments'>Apartamentos</Label>
                 </div>
               </RadioGroup>
             </div>
+
             <div className='space-y-2'>
               <Label>Amenidades</Label>
               <div className='grid grid-cols-2 gap-2'>
@@ -157,8 +171,8 @@ export default function Component() {
                   <div key={amenidad} className='flex items-center space-x-2'>
                     <Checkbox
                       id={amenidad}
-                      checked={amenidades.includes(amenidad)}
-                      onCheckedChange={() => handleAmenidadChange(amenidad)}
+                      name='amenities'
+                      value={amenidad}
                       className='h-5 w-5 border-white focus-visible:ring-gray-400'
                     />
                     <Label htmlFor={amenidad}>{amenidad}</Label>
