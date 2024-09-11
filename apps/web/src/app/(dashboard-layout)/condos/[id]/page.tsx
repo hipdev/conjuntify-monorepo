@@ -1,60 +1,82 @@
 'use client'
 
-import { useRef } from 'react'
-
+import { useEffect, useRef, useState } from 'react'
+import { useParams } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useMutation } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import { api } from '@packages/backend/convex/_generated/api'
+import { Id } from '@packages/backend/convex/_generated/dataModel'
+import { toast } from '@/hooks/use-toast'
 
-export default function Component() {
+export default function EditCondoPage() {
   const formRef = useRef<HTMLFormElement>(null)
-  const createCondo = useMutation(api.condos.createCondo)
+  const params = useParams()
+  const condoId = params.id as string
+
+  const [initialData, setInitialData] = useState<any>(null)
+  const getCondo = useQuery(api.condos.getCondo, { id: condoId as Id<'condos'> })
+  const updateCondo = useMutation(api.condos.updateCondo)
+
+  useEffect(() => {
+    if (getCondo) {
+      setInitialData(getCondo)
+    }
+  }, [getCondo])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!formRef.current) return
+    if (!formRef.current || !initialData) return
 
     const formData = new FormData(formRef.current)
 
     const condoData = {
-      name: formData.get('name') as string,
       address: formData.get('address') as string,
-      city: formData.get('city') as string,
-      state: formData.get('state') as string,
-      country: formData.get('country') as string,
-      zipCode: formData.get('zipCode') as string,
-      type: formData.get('type') as 'houses' | 'apartments',
-      numberUnits: parseInt(formData.get('numberUnits') as string),
       amenities: Array.from(formData.getAll('amenities')) as string[],
-      uniqueCode: formData.get('uniqueCode') as string
+      city: formData.get('city') as string,
+      country: formData.get('country') as string,
+      name: formData.get('name') as string,
+      numberUnits: parseInt(formData.get('numberUnits') as string),
+      phone: formData.get('phone') as string,
+      state: formData.get('state') as string,
+      type: formData.get('type') as 'houses' | 'apartments',
+      uniqueCode: formData.get('uniqueCode') as string,
+      zipCode: formData.get('zipCode') as string
     }
 
-    console.log(condoData, 'formData')
+    // Check if data has changed
+    const hasChanged = JSON.stringify(condoData) !== JSON.stringify(initialData)
 
-    try {
-      const newCondoId = await createCondo(condoData)
-      console.log('New condo created with ID:', newCondoId)
-      // Handle success (e.g., show a success message, redirect, etc.)
-    } catch (error) {
-      console.error('Error creating condo:', error)
-      // Handle error (e.g., show an error message)
+    if (hasChanged) {
+      try {
+        await updateCondo({ id: condoId as Id<'condos'>, ...condoData })
+        toast({
+          title: 'Condominio actualizado con éxito',
+          variant: 'default'
+        })
+      } catch (error) {
+        console.error('Error updating condo:', error)
+        toast({
+          title: 'Error actualizando el condominio',
+          variant: 'destructive'
+        })
+      }
+    } else {
+      console.log('No changes detected')
     }
+  }
+
+  if (!initialData) {
+    return <div>Loading...</div>
   }
 
   return (
     <div className='mx-auto min-h-screen max-w-4xl bg-black p-8 text-white'>
       <div className='mb-8 flex items-center justify-between'>
-        <h1 className='text-3xl font-bold'>Tu Condominio</h1>
-        <Button
-          onClick={() => {}}
-          className='bg-white text-black hover:bg-gray-200 focus-visible:ring-gray-400'
-        >
-          Registrar otro condominio
-        </Button>
+        <h1 className='text-3xl font-bold'>Actualizar Condominio</h1>
       </div>
       <form ref={formRef} onSubmit={handleSubmit} className='mx-auto max-w-4xl space-y-8'>
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
@@ -64,6 +86,7 @@ export default function Component() {
               <Input
                 id='nombre'
                 name='name'
+                defaultValue={initialData.name}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -72,6 +95,7 @@ export default function Component() {
               <Input
                 id='direccion'
                 name='address'
+                defaultValue={initialData.address}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -80,6 +104,7 @@ export default function Component() {
               <Input
                 id='city'
                 name='city'
+                defaultValue={initialData.city}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -88,6 +113,7 @@ export default function Component() {
               <Input
                 id='state'
                 name='state'
+                defaultValue={initialData.state}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -96,6 +122,7 @@ export default function Component() {
               <Input
                 id='country'
                 name='country'
+                defaultValue={initialData.country}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -105,6 +132,7 @@ export default function Component() {
                 id='numberUnits'
                 name='numberUnits'
                 type='number'
+                defaultValue={initialData.numberUnits}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -115,6 +143,7 @@ export default function Component() {
               <Input
                 id='zipCode'
                 name='zipCode'
+                defaultValue={initialData.zipCode}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -123,6 +152,7 @@ export default function Component() {
               <Input
                 id='uniqueCode'
                 name='uniqueCode'
+                defaultValue={initialData.uniqueCode}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -132,12 +162,13 @@ export default function Component() {
                 id='phone'
                 name='phone'
                 type='tel'
+                defaultValue={initialData.phone}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
             <div>
               <Label>Tipo de Condominio</Label>
-              <RadioGroup name='type' defaultValue='houses' className='flex space-x-4'>
+              <RadioGroup name='type' defaultValue={initialData.type} className='flex space-x-4'>
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem
                     value='houses'
@@ -156,7 +187,6 @@ export default function Component() {
                 </div>
               </RadioGroup>
             </div>
-
             <div className='space-y-2'>
               <Label>Amenidades</Label>
               <div className='grid grid-cols-2 gap-2'>
@@ -173,6 +203,7 @@ export default function Component() {
                       id={amenidad}
                       name='amenities'
                       value={amenidad}
+                      defaultChecked={initialData.amenities.includes(amenidad)}
                       className='h-5 w-5 border-white focus-visible:ring-gray-400'
                     />
                     <Label htmlFor={amenidad}>{amenidad}</Label>
@@ -186,7 +217,7 @@ export default function Component() {
           type='submit'
           className='w-full bg-white text-black hover:bg-gray-200 focus-visible:ring-gray-400'
         >
-          Registrar Condominio
+          Actualizar Condominio
         </Button>
       </form>
     </div>

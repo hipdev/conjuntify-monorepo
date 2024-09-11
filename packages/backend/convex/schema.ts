@@ -32,6 +32,7 @@ const schema = defineSchema({
     isActive: v.boolean(),
     name: v.string(),
     numberUnits: v.optional(v.number()),
+    phone: v.optional(v.string()),
     state: v.string(),
     type: v.union(v.literal('houses'), v.literal('apartments')),
     uniqueCode: v.string(),
