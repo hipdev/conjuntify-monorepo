@@ -1,18 +1,19 @@
-'use client';
+'use client'
 
-import { Bell, Building2, Handshake, Home } from 'lucide-react';
+import { Bell, Building2, Handshake, Home } from 'lucide-react'
 
-import { cn } from '@/lib/utils';
-import { useSidebarStore } from './sidebar-store';
-import CustomLink from '@/components/design-system/custom-link';
+import { cn } from '@/lib/utils'
+import { useSidebarStore } from './sidebar-store'
+import CustomLink from '@/components/design-system/custom-link'
+import { Id } from '@packages/backend/convex/_generated/dataModel'
 
-export default function AsideNav() {
-  const isCollapsed = useSidebarStore((state) => state.isCollapsed);
+export default function AsideNav({ condoId }: { condoId: Id<'condos'> }) {
+  const isCollapsed = useSidebarStore((state) => state.isCollapsed)
 
   const iconClassName = cn(
     'h-auto w-5 text-sm',
     isCollapsed ? 'text-neutral-500' : 'text-gray-500/80'
-  );
+  )
 
   return (
     <nav>
@@ -23,7 +24,7 @@ export default function AsideNav() {
         isCollapsed={isCollapsed}
       />
       <CustomLink
-        href='/'
+        href={`/users/${condoId}`}
         IconComponent={<Bell size={20} className={iconClassName} />}
         label='Usuarios'
         isCollapsed={isCollapsed}
@@ -38,12 +39,7 @@ export default function AsideNav() {
         Recursos
       </h5>
 
-      <div
-        className={cn(
-          'w-full border-t border-white/30 px-5 pt-6',
-          !isCollapsed && 'hidden'
-        )}
-      />
+      <div className={cn('w-full border-t border-white/30 px-5 pt-6', !isCollapsed && 'hidden')} />
 
       <CustomLink
         href='/'
@@ -59,5 +55,5 @@ export default function AsideNav() {
         isCollapsed={isCollapsed}
       />
     </nav>
-  );
+  )
 }

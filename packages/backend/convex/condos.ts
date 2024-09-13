@@ -3,6 +3,8 @@ import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import { ConvexError } from 'convex/values'
 
+import { filter } from 'convex-helpers/server/filter'
+
 export const createCondo = mutation({
   args: {
     name: v.string(),
@@ -69,26 +71,6 @@ export const createCondo = mutation({
   }
 })
 
-export const getCondo = query({
-  args: { id: v.id('condos') },
-  handler: async (ctx, args) => {
-    // Check if the user exists and is an admin
-    const userId = await getAuthUserId(ctx)
-
-    if (!userId) {
-      throw new ConvexError('Usuario no encontrado')
-    }
-
-    const condo = await ctx.db.get(args.id)
-
-    if (!condo) {
-      throw new Error('Condo not found')
-    }
-
-    return condo
-  }
-})
-
 export const updateCondo = mutation({
   args: {
     id: v.id('condos'),
@@ -149,5 +131,50 @@ export const updateCondo = mutation({
     })
 
     return args.id
+  }
+})
+
+export const getCondo = query({
+  args: { id: v.id('condos') },
+  handler: async (ctx, args) => {
+    // Check if the user exists, later it will be checked if the user is an admin
+    const userId = await getAuthUserId(ctx)
+
+    if (!userId) {
+      throw new ConvexError('Usuario no encontrado')
+    }
+
+    const condo = await ctx.db.get(args.id)
+
+    if (!condo) {
+      throw new Error('Condo not found')
+    }
+
+    return condo
+  }
+})
+
+export const getCondosByUserId = query({
+  handler: async (ctx, args) => {
+    // Check if the user exists
+    const userId = await getAuthUserId(ctx)
+
+    if (!userId) {
+      throw new ConvexError('Usuario no encontrado')
+    }
+
+    const user = await ctx.db.get(userId)
+
+    if (!user) {
+      throw new ConvexError('Usuario no encontrado')
+    }
+
+    // Get the condos of the user
+    const condos = await filter(
+      ctx.db.query('condos'),
+      (condo) => condo.admins.includes(userId) ?? false
+    ).collect()
+
+    return condos
   }
 })

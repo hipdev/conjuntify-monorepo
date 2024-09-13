@@ -1,16 +1,22 @@
-'use client';
+'use client'
 
-import Logo from '@/components/design-system/logo';
-import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import AsideNav from './aside-nav';
-import { useSidebarStore } from './sidebar-store';
-import Image from 'next/image';
-import SidebarFooter from './sidebar-footer';
+import Logo from '@/components/design-system/logo'
+import { cn } from '@/lib/utils'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import AsideNav from './aside-nav'
+import { useSidebarStore } from './sidebar-store'
+import Image from 'next/image'
+import SidebarFooter from './sidebar-footer'
+import { useQuery } from 'convex/react'
+import { api } from '@packages/backend/convex/_generated/api'
 
 export default function SideBar() {
-  const setIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
-  const isCollapsed = useSidebarStore((state) => state.isCollapsed);
+  const setIsCollapsed = useSidebarStore((state) => state.setIsCollapsed)
+  const isCollapsed = useSidebarStore((state) => state.isCollapsed)
+
+  const condos = useQuery(api.condos.getCondosByUserId, {})
+
+  console.log(condos, 'condos')
 
   return (
     <aside
@@ -26,10 +32,7 @@ export default function SideBar() {
             onClick={() => setIsCollapsed()}
             className='absolute -right-[17px] top-10 rounded-full border border-white/15 bg-black p-1 transition-colors hover:border-white/30 hover:bg-black'
           >
-            <ChevronRight
-              className='relative left-px text-neutral-500'
-              size={22}
-            />
+            <ChevronRight className='relative left-px text-neutral-500' size={22} />
           </button>
           <div className='mb-6 border-b border-b-white/10 p-2 py-4'>
             {/* TODO: Add logotype */}
@@ -44,10 +47,7 @@ export default function SideBar() {
             onClick={() => setIsCollapsed()}
             className='absolute -right-[17px] top-10 rounded-full border border-white/15 bg-black p-1 transition-colors hover:border-white/30 hover:bg-black'
           >
-            <ChevronLeft
-              size={22}
-              className='relative right-px text-neutral-500'
-            />
+            <ChevronLeft size={22} className='relative right-px text-neutral-500' />
           </button>
         </>
       )}
@@ -58,10 +58,10 @@ export default function SideBar() {
         }}
         className='flex flex-col justify-between gap-0.5 text-sm text-white'
       >
-        <AsideNav />
+        {condos?.[0]?._id && <AsideNav condoId={condos?.[0]?._id} />}
 
         <SidebarFooter />
       </div>
     </aside>
-  );
+  )
 }
