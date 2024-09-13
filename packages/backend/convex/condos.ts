@@ -185,3 +185,32 @@ export const getCondosByUserId = query({
     return condos
   }
 })
+
+// Get condo temporal users
+
+export const getCondoTemporalUsers = query({
+  args: { condoId: v.id('condos') },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+
+    if (!userId) {
+      console.error('User not found')
+
+      return null
+    }
+
+    const user = await ctx.db.get(userId)
+
+    if (!user) {
+      console.error('User not found')
+
+      return null
+    }
+
+    const temporalUsers = await ctx.db
+      .query('condoTemporalUnitUsers')
+      .filter((q) => q.eq(q.field('condoId'), args.condoId))
+      .collect()
+    return temporalUsers
+  }
+})

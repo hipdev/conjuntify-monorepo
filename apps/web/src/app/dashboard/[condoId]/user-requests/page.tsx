@@ -13,6 +13,10 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useQuery } from 'convex/react'
+import { useParams } from 'next/navigation'
+import { api } from '@packages/backend/convex/_generated/api'
+import { Id } from '@packages/backend/convex/_generated/dataModel'
 
 // Tipo para los datos de usuario
 type User = {
@@ -26,41 +30,15 @@ type User = {
 }
 
 // Datos de ejemplo
-const initialUsers: User[] = [
-  {
-    apartamento: '101',
-    edificio: 'A',
-    celular: '3001234567',
-    whatsapp: true,
-    propietario: true,
-    identificacion: '1234567890',
-    matricula: '50N-12345678'
-  },
-  {
-    apartamento: '202',
-    edificio: 'B',
-    celular: '3109876543',
-    whatsapp: false,
-    propietario: false,
-    identificacion: '0987654321',
-    matricula: '50N-87654321'
-  },
-  {
-    apartamento: '303',
-    edificio: 'C',
-    celular: '3205555555',
-    whatsapp: true,
-    propietario: true,
-    identificacion: '5555555555',
-    matricula: '50N-55555555'
-  }
-]
 
 export default function Component() {
-  const [users, setUsers] = useState<User[]>(initialUsers)
+  const params = useParams()
+  const condoId = params.id as Id<'condos'>
+  const userRequests = condoId ? useQuery(api.condos.getCondoTemporalUsers, { condoId }) : null
+
   const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredUsers = users.filter((user) =>
+  const filteredUsers = userRequests?.filter((user) =>
     Object.values(user).some((value) =>
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -93,34 +71,45 @@ export default function Component() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user, index) => (
-                <TableRow key={index} className='border-t border-neutral-700 hover:bg-neutral-800'>
-                  <TableCell className='font-medium'>{user.apartamento}</TableCell>
-                  <TableCell className='font-medium'>{user.apartamento}</TableCell>
-                  <TableCell>{user.edificio}</TableCell>
-                  <TableCell>{user.celular}</TableCell>
-                  <TableCell>
-                    <div className='flex items-center justify-center'>
-                      {user.whatsapp ? (
-                        <CheckCircle className='text-green-500' />
-                      ) : (
-                        <XCircle className='text-red-500' />
-                      )}
-                    </div>
+              {filteredUsers && filteredUsers.length > 0 ? (
+                filteredUsers.map((user, index) => (
+                  <TableRow
+                    key={index}
+                    className='border-t border-neutral-700 hover:bg-neutral-800'
+                  >
+                    <TableCell className='font-medium'>{user.name}</TableCell>
+                    <TableCell className='font-medium'>{user.unitNumber}</TableCell>
+                    <TableCell>{user.buildingNumber}</TableCell>
+                    <TableCell>{user.phone}</TableCell>
+                    <TableCell>
+                      <div className='flex items-center justify-center'>
+                        {user.withWhatsapp ? (
+                          <CheckCircle className='text-green-500' />
+                        ) : (
+                          <XCircle className='text-red-500' />
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className='flex items-center justify-center'>
+                        {user.isOwner ? (
+                          <CheckCircle className='text-green-500' />
+                        ) : (
+                          <XCircle className='text-red-500' />
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>{user.idn}</TableCell>
+                    <TableCell>{user.propertyRegistration}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={8} className='text-center'>
+                    No users found
                   </TableCell>
-                  <TableCell>
-                    <div className='flex items-center justify-center'>
-                      {user.propietario ? (
-                        <CheckCircle className='text-green-500' />
-                      ) : (
-                        <XCircle className='text-red-500' />
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>{user.identificacion}</TableCell>
-                  <TableCell>{user.matricula}</TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>

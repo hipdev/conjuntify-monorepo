@@ -56,6 +56,7 @@ const schema = defineSchema({
 
   // Tabla temporal con información de apartamentos y usuarios que dicen que viven en el
   condoTemporalUnitUsers: defineTable({
+    name: v.string(),
     buildingNumber: v.string(),
     condoId: v.id('condos'),
     floorNumber: v.string(),
@@ -64,7 +65,9 @@ const schema = defineSchema({
     phone: v.string(),
     unitNumber: v.string(),
     userId: v.id('users'),
-    withWhatsapp: v.optional(v.boolean())
+    withWhatsapp: v.optional(v.boolean()),
+    idn: v.optional(v.string()),
+    propertyRegistration: v.optional(v.string())
   }),
 
   // Tabla para definir las áreas comunes del condominio
