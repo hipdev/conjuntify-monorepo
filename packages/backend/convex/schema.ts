@@ -37,7 +37,7 @@ const schema = defineSchema({
     type: v.union(v.literal('houses'), v.literal('apartments')),
     uniqueCode: v.string(),
     zipCode: v.string()
-  }),
+  }).index('by_uniqueCode', ['uniqueCode']),
 
   // Tabla para definir los apartamentos de cada condominio
   condoUnits: defineTable({

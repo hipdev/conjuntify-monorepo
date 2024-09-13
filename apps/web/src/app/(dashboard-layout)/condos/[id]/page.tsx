@@ -27,6 +27,8 @@ export default function EditCondoPage() {
     }
   }, [getCondo])
 
+  console.log(getCondo, 'data')
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!formRef.current || !initialData) return
