@@ -141,7 +141,9 @@ export const getCondo = query({
     const userId = await getAuthUserId(ctx)
 
     if (!userId) {
-      throw new ConvexError('Usuario no encontrado')
+      console.error('User not found')
+
+      return null
     }
 
     const condo = await ctx.db.get(args.id)
@@ -161,13 +163,17 @@ export const getCondosByUserId = query({
     const userId = await getAuthUserId(ctx)
 
     if (!userId) {
-      throw new ConvexError('Usuario no encontrado')
+      console.error('User not found')
+
+      return null
     }
 
     const user = await ctx.db.get(userId)
 
     if (!user) {
-      throw new ConvexError('Usuario no encontrado')
+      console.error('User not found')
+
+      return null
     }
 
     // Get the condos of the user

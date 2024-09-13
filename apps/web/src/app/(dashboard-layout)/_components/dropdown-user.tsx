@@ -53,7 +53,11 @@ export default function DropdownUser() {
         <DropdownMenuItem>Mi cuenta</DropdownMenuItem>
         <DropdownMenuItem>
           <Link
-            href={condos && condos?.length > 0 ? `/condo/${condos[0]._id}` : '/condos/new-condo'}
+            href={
+              condos && condos?.length > 0
+                ? `/dashboard/condos/${condos[0]._id}`
+                : '/dashboard/condos/new-condo'
+            }
           >
             Administración
           </Link>

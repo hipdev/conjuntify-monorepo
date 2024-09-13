@@ -43,7 +43,7 @@ export default function Component() {
         title: 'Condominio creado con éxito',
         variant: 'default'
       })
-      router.push(`/condos/${newCondoId}`)
+      router.push(`/dashboard/condos/${newCondoId}`)
     } catch (error) {
       console.error('Error creando el condominio:', error)
       toast({
