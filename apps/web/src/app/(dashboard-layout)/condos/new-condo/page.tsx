@@ -145,15 +145,7 @@ export default function Component() {
             </div>
             <div>
               <Label>Tipo de Condominio</Label>
-              <RadioGroup name='type' defaultValue='houses' className='flex space-x-4'>
-                <div className='flex items-center space-x-2'>
-                  <RadioGroupItem
-                    value='houses'
-                    id='houses'
-                    className='border-white focus-visible:ring-gray-400'
-                  />
-                  <Label htmlFor='houses'>Casas</Label>
-                </div>
+              <RadioGroup name='type' defaultValue='apartments' className='flex space-x-4'>
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem
                     value='apartments'
@@ -161,6 +153,14 @@ export default function Component() {
                     className='border-white focus-visible:ring-gray-400'
                   />
                   <Label htmlFor='apartments'>Apartamentos</Label>
+                </div>
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem
+                    value='houses'
+                    id='houses'
+                    className='border-white focus-visible:ring-gray-400'
+                  />
+                  <Label htmlFor='houses'>Casas</Label>
                 </div>
               </RadioGroup>
             </div>

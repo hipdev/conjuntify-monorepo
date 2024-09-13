@@ -1,22 +1,19 @@
 'use client'
-
-import Logo from '@/components/design-system/logo'
-import { cn } from '@/lib/utils'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import AsideNav from './aside-nav'
-import { useSidebarStore } from './sidebar-store'
-import Image from 'next/image'
-import SidebarFooter from './sidebar-footer'
 import { useQuery } from 'convex/react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { api } from '@packages/backend/convex/_generated/api'
+
+import { cn } from '@/lib/utils'
+import AsideNav from './aside-nav'
+import SidebarFooter from './sidebar-footer'
+import { useSidebarStore } from './sidebar-store'
+import Logo from '@/components/design-system/logo'
 
 export default function SideBar() {
   const setIsCollapsed = useSidebarStore((state) => state.setIsCollapsed)
   const isCollapsed = useSidebarStore((state) => state.isCollapsed)
 
   const condos = useQuery(api.condos.getCondosByUserId, {})
-
-  console.log(condos, 'condos')
 
   return (
     <aside

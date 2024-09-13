@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -14,8 +16,12 @@ import { Ellipsis } from 'lucide-react'
 import { useSidebarStore } from './sidebar-store'
 import { cn } from '@/lib/utils'
 import { useAuthActions } from '@convex-dev/auth/react'
+import { useQuery } from 'convex/react'
+import { api } from '@packages/backend/convex/_generated/api'
 
 export default function DropdownUser() {
+  const condos = useQuery(api.condos.getCondosByUserId, {})
+
   const isCollapsed = useSidebarStore((state) => state.isCollapsed)
   const { signOut } = useAuthActions()
   const router = useRouter()
@@ -46,7 +52,11 @@ export default function DropdownUser() {
       <DropdownMenuContent className='w-44 border-none bg-black text-white/80'>
         <DropdownMenuItem>Mi cuenta</DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href='/condo'>Administración</Link>
+          <Link
+            href={condos && condos?.length > 0 ? `/condo/${condos[0]._id}` : '/condos/new-condo'}
+          >
+            Administración
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className='bg-white/15' />
         <DropdownMenuItem

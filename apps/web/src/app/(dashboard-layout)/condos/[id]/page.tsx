@@ -1,15 +1,17 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useParams } from 'next/navigation'
+import { useMutation, useQuery } from 'convex/react'
+import { api } from '@packages/backend/convex/_generated/api'
+import { Id } from '@packages/backend/convex/_generated/dataModel'
+
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useMutation, useQuery } from 'convex/react'
-import { api } from '@packages/backend/convex/_generated/api'
-import { Id } from '@packages/backend/convex/_generated/dataModel'
+
 import { toast } from '@/hooks/use-toast'
 
 export default function EditCondoPage() {
@@ -17,21 +19,13 @@ export default function EditCondoPage() {
   const params = useParams()
   const condoId = params.id as string
 
-  const [initialData, setInitialData] = useState<any>(null)
   const getCondo = useQuery(api.condos.getCondo, { id: condoId as Id<'condos'> })
+
   const updateCondo = useMutation(api.condos.updateCondo)
-
-  useEffect(() => {
-    if (getCondo) {
-      setInitialData(getCondo)
-    }
-  }, [getCondo])
-
-  console.log(getCondo, 'data')
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!formRef.current || !initialData) return
+    if (!formRef.current || !getCondo) return
 
     const formData = new FormData(formRef.current)
 
@@ -50,7 +44,7 @@ export default function EditCondoPage() {
     }
 
     // Check if data has changed
-    const hasChanged = JSON.stringify(condoData) !== JSON.stringify(initialData)
+    const hasChanged = JSON.stringify(condoData) !== JSON.stringify(getCondo)
 
     if (hasChanged) {
       try {
@@ -71,8 +65,8 @@ export default function EditCondoPage() {
     }
   }
 
-  if (!initialData) {
-    return <div>Loading...</div>
+  if (!getCondo) {
+    return <p className='animate-pulse text-center text-xl font-semibold'>Cargando...</p>
   }
 
   return (
@@ -88,7 +82,7 @@ export default function EditCondoPage() {
               <Input
                 id='nombre'
                 name='name'
-                defaultValue={initialData.name}
+                defaultValue={getCondo?.name}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -97,7 +91,7 @@ export default function EditCondoPage() {
               <Input
                 id='direccion'
                 name='address'
-                defaultValue={initialData.address}
+                defaultValue={getCondo?.address}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -106,7 +100,7 @@ export default function EditCondoPage() {
               <Input
                 id='city'
                 name='city'
-                defaultValue={initialData.city}
+                defaultValue={getCondo?.city}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -115,7 +109,7 @@ export default function EditCondoPage() {
               <Input
                 id='state'
                 name='state'
-                defaultValue={initialData.state}
+                defaultValue={getCondo?.state}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -124,7 +118,7 @@ export default function EditCondoPage() {
               <Input
                 id='country'
                 name='country'
-                defaultValue={initialData.country}
+                defaultValue={getCondo?.country}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -134,7 +128,7 @@ export default function EditCondoPage() {
                 id='numberUnits'
                 name='numberUnits'
                 type='number'
-                defaultValue={initialData.numberUnits}
+                defaultValue={getCondo?.numberUnits}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -145,7 +139,7 @@ export default function EditCondoPage() {
               <Input
                 id='zipCode'
                 name='zipCode'
-                defaultValue={initialData.zipCode}
+                defaultValue={getCondo?.zipCode}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -154,7 +148,7 @@ export default function EditCondoPage() {
               <Input
                 id='uniqueCode'
                 name='uniqueCode'
-                defaultValue={initialData.uniqueCode}
+                defaultValue={getCondo?.uniqueCode}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
@@ -164,21 +158,13 @@ export default function EditCondoPage() {
                 id='phone'
                 name='phone'
                 type='tel'
-                defaultValue={initialData.phone}
+                defaultValue={getCondo?.phone}
                 className='border-gray-700 bg-gray-800 focus-visible:ring-gray-400'
               />
             </div>
             <div>
               <Label>Tipo de Condominio</Label>
-              <RadioGroup name='type' defaultValue={initialData.type} className='flex space-x-4'>
-                <div className='flex items-center space-x-2'>
-                  <RadioGroupItem
-                    value='houses'
-                    id='houses'
-                    className='border-white focus-visible:ring-gray-400'
-                  />
-                  <Label htmlFor='houses'>Casas</Label>
-                </div>
+              <RadioGroup name='type' defaultValue='apartments' className='flex space-x-4'>
                 <div className='flex items-center space-x-2'>
                   <RadioGroupItem
                     value='apartments'
@@ -186,6 +172,14 @@ export default function EditCondoPage() {
                     className='border-white focus-visible:ring-gray-400'
                   />
                   <Label htmlFor='apartments'>Apartamentos</Label>
+                </div>
+                <div className='flex items-center space-x-2'>
+                  <RadioGroupItem
+                    value='houses'
+                    id='houses'
+                    className='border-white focus-visible:ring-gray-400'
+                  />
+                  <Label htmlFor='houses'>Casas</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -205,7 +199,7 @@ export default function EditCondoPage() {
                       id={amenidad}
                       name='amenities'
                       value={amenidad}
-                      defaultChecked={initialData.amenities.includes(amenidad)}
+                      defaultChecked={getCondo?.amenities.includes(amenidad)}
                       className='h-5 w-5 border-white focus-visible:ring-gray-400'
                     />
                     <Label htmlFor={amenidad}>{amenidad}</Label>

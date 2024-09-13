@@ -147,7 +147,8 @@ export const getCondo = query({
     const condo = await ctx.db.get(args.id)
 
     if (!condo) {
-      throw new Error('Condo not found')
+      console.error('Condo not found')
+      return null
     }
 
     return condo
