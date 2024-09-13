@@ -24,9 +24,15 @@ export default function AsideNav({ condoId }: { condoId: Id<'condos'> }) {
         isCollapsed={isCollapsed}
       />
       <CustomLink
-        href={`/users/${condoId}`}
+        href={`/dashboard/${condoId}/users`}
         IconComponent={<Bell size={20} className={iconClassName} />}
         label='Usuarios'
+        isCollapsed={isCollapsed}
+      />
+      <CustomLink
+        href={`/dashboard/${condoId}/user-requests`}
+        IconComponent={<Bell size={20} className={iconClassName} />}
+        label='Solicitudes'
         isCollapsed={isCollapsed}
       />
 
