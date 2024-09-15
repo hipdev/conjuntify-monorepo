@@ -47,7 +47,7 @@ export default function Component() {
   return (
     <div className='min-h-screen bg-black p-8 text-white'>
       <div className='mx-auto max-w-6xl space-y-8'>
-        <h1 className='text-3xl font-bold'>Tabla de Usuarios</h1>
+        <h1 className='text-3xl font-bold'>Solicitudes de usuarios</h1>
 
         <Input
           placeholder='Buscar usuarios...'
@@ -104,9 +104,9 @@ export default function Component() {
                   </TableRow>
                 ))
               ) : (
-                <TableRow>
+                <TableRow className='hover:bg-neutral-800'>
                   <TableCell colSpan={8} className='text-center'>
-                    No users found
+                    Sin solicitudes pendientes
                   </TableCell>
                 </TableRow>
               )}
