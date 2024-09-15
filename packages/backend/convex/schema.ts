@@ -67,7 +67,8 @@ const schema = defineSchema({
     userId: v.id('users'),
     withWhatsapp: v.optional(v.boolean()),
     idn: v.optional(v.string()),
-    propertyRegistration: v.optional(v.string())
+    propertyRegistration: v.optional(v.string()),
+    status: v.optional(v.union(v.literal('pending'), v.literal('approved'), v.literal('rejected')))
   })
     .index('by_condo', ['condoId'])
     .index('by_user', ['userId']),

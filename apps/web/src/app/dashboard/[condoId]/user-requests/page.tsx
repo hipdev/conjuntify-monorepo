@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle, XCircle } from 'lucide-react'
+import { CheckCircle, Trash2, XCircle } from 'lucide-react'
 
 import {
   Table,
@@ -31,9 +31,15 @@ type User = {
 
 // Datos de ejemplo
 
+const statusValues = {
+  pending: 'Pendiente',
+  approved: 'Aprobado',
+  rejected: 'Rechazado'
+}
+
 export default function Component() {
   const params = useParams()
-  const condoId = params.id as Id<'condos'>
+  const condoId = params.condoId as Id<'condos'>
   const userRequests = condoId ? useQuery(api.condos.getCondoTemporalUsers, { condoId }) : null
 
   const [searchTerm, setSearchTerm] = useState('')
@@ -67,7 +73,9 @@ export default function Component() {
                 <TableHead className='text-center'>WhatsApp</TableHead>
                 <TableHead className='text-center'>Propietario</TableHead>
                 <TableHead>Identificación</TableHead>
-                <TableHead>Matrícula Inmobiliaria</TableHead>
+                <TableHead>Matrícula</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -99,8 +107,19 @@ export default function Component() {
                         )}
                       </div>
                     </TableCell>
-                    <TableCell>{user.idn}</TableCell>
-                    <TableCell>{user.propertyRegistration}</TableCell>
+                    <TableCell>{user.idn || 'N/A'}</TableCell>
+                    <TableCell>{user.propertyRegistration || 'N/A'}</TableCell>
+                    <TableCell>
+                      {statusValues[user.status as keyof typeof statusValues] || 'N/A'}
+                    </TableCell>
+                    <TableCell className='flex items-center gap-5'>
+                      <button type='button'>
+                        <CheckCircle className='text-green-700' />
+                      </button>
+                      <button type='button'>
+                        <Trash2 className='text-red-800' />
+                      </button>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (

@@ -85,8 +85,10 @@ export const createCondoApplication = mutation({
       phone: args.phone,
       withWhatsapp: args.withWhatsapp,
       isOwner: args.isOwner,
+      isTenant: args.isOwner ? false : true,
       idn: args.idn,
-      propertyRegistration: args.propertyRegistration
+      propertyRegistration: args.propertyRegistration,
+      status: 'pending'
     })
 
     return {
