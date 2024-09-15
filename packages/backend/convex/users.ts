@@ -57,10 +57,22 @@ export const createCondoApplication = mutation({
 
     if (!condoId) {
       return {
-        error: 'Condo not found'
+        error: 'Código no encontrado'
       }
     }
 
+    // Verify if the user already has an application for this condo
+    const application = await ctx.db
+      .query('condoTemporalUnitUsers')
+      .filter((q) => q.eq(q.field('userId'), userId))
+      .filter((q) => q.eq(q.field('condoId'), condoId._id))
+      .first()
+
+    if (application) {
+      return {
+        error: 'Ya existe una solicitud pendiente'
+      }
+    }
     // create temporal application
 
     const applicationId = await ctx.db.insert('condoTemporalUnitUsers', {
@@ -76,5 +88,10 @@ export const createCondoApplication = mutation({
       idn: args.idn,
       propertyRegistration: args.propertyRegistration
     })
+
+    return {
+      applicationId,
+      error: null
+    }
   }
 })

@@ -68,7 +68,9 @@ const schema = defineSchema({
     withWhatsapp: v.optional(v.boolean()),
     idn: v.optional(v.string()),
     propertyRegistration: v.optional(v.string())
-  }),
+  })
+    .index('by_condo', ['condoId'])
+    .index('by_user', ['userId']),
 
   // Tabla para definir las áreas comunes del condominio
   commonAreas: defineTable({

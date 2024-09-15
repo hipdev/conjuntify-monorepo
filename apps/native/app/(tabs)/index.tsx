@@ -59,7 +59,6 @@ export default function HomeScreen() {
   }
 
   const handleDetailsSubmit = async (data: FormData) => {
-    console.log(data)
     const formData = {
       ...data
     }
@@ -68,25 +67,21 @@ export default function HomeScreen() {
       name: user?.name || ''
     })
     if (result?.error) {
-      console.log(result.error, 'error')
       Toast.show({
         type: 'error',
-        text1: 'Código no encontrado',
+        text1: result.error,
         position: 'bottom',
         text1Style: {
           fontSize: 17,
           fontWeight: 'bold'
         }
       })
-      // Handle the error, e.g., show an error message to the user
     }
   }
 
   if (!user) {
     return <Text>Loading...</Text>
   }
-
-  console.log(errors, 'errors')
 
   return (
     <SafeAreaView className='flex-1'>
