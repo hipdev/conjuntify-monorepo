@@ -263,6 +263,7 @@ export const getUsersByCondoId = query({
           unitNumber: unit.unitNumber,
           buildingNumber: unit.buildingNumber,
           propertyType: unit.propertyType,
+          phone: unit.phone,
           isOwner: unit.owners?.includes(user._id) || false,
           isTenant: unit.tenants?.includes(user._id) || false
         }))

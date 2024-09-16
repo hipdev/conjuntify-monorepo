@@ -12,7 +12,7 @@ export const createUnitAndAssign = mutation({
     propertyType: v.union(v.literal('apartment'), v.literal('house')),
     temporalUnitId: v.id('condoTemporalUnitUsers'),
     unitNumber: v.string(),
-    userId: v.id('users')
+    userId: v.id('users') // The user that wants to be the owner or tenant of the unit
   },
   handler: async (ctx, args) => {
     // Verificar si el usuario está autenticado y es un administrador del condominio
@@ -71,6 +71,14 @@ export const createUnitAndAssign = mutation({
         condos: updatedCondos
       })
     }
+
+    // Add the reference table
+    await ctx.db.insert('condoUnitUsers', {
+      condoUnitId: unitId,
+      userId: args.userId,
+      isOwner: args.isOwner,
+      isTenant: !args.isOwner
+    })
 
     // Actualizar el status de condoTemporalUnitUsers
     await ctx.db.patch(args.temporalUnitId, {

@@ -19,6 +19,7 @@ import { api } from '@packages/backend/convex/_generated/api'
 import { Id } from '@packages/backend/convex/_generated/dataModel'
 import { AssignUnit } from './_components/assign-unit'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 const statusValues = {
   pending: 'Pendiente',
@@ -108,24 +109,32 @@ export default function UserRequestsPage() {
                     <TableCell>
                       <div className='flex items-center justify-center'>
                         {user.withWhatsapp ? (
-                          <CheckCircle className='text-green-500' />
+                          <CheckCircle className='text-green-600' />
                         ) : (
-                          <XCircle className='text-red-500' />
+                          <XCircle className='text-red-600' />
                         )}
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className='flex items-center justify-center'>
                         {user.isOwner ? (
-                          <CheckCircle className='text-green-500' />
+                          <CheckCircle className='text-green-600' />
                         ) : (
-                          <XCircle className='text-red-500' />
+                          <XCircle className='text-red-600' />
                         )}
                       </div>
                     </TableCell>
                     <TableCell>{user.idn || 'N/A'}</TableCell>
                     <TableCell>{user.propertyRegistration || 'N/A'}</TableCell>
-                    <TableCell>
+                    <TableCell
+                      className={cn(
+                        user.status == 'pending'
+                          ? 'text-yellow-500'
+                          : user.status == 'approved'
+                            ? 'text-green-600'
+                            : 'text-red-500'
+                      )}
+                    >
                       {statusValues[user.status as keyof typeof statusValues] || 'N/A'}
                     </TableCell>
                     <TableCell className='flex items-center gap-3'>

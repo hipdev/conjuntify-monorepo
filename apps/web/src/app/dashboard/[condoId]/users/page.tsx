@@ -29,6 +29,8 @@ export default function UsersPage() {
 
   const users = condoId ? useQuery(api.condos.getUsersByCondoId, { condoId }) : []
 
+  console.log('users', users)
+
   const filteredUsers = users?.filter((user) =>
     Object.values(user).some((value) =>
       value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
@@ -66,9 +68,9 @@ export default function UsersPage() {
                     key={user._id}
                     className='border-t border-neutral-700 hover:bg-neutral-800'
                   >
-                    <TableCell className='font-medium'>{`${user.name} ${user.lastName}`}</TableCell>
+                    <TableCell className='font-medium'>{`${user.name} ${user.lastName || ''}`}</TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.phone || 'N/A'}</TableCell>
+                    <TableCell>{user.phone || user.units[0].phone}</TableCell>
                     <TableCell>
                       {user.isOwner ? 'Propietario' : ''}
                       {user.isOwner && user.isTenant ? ' / ' : ''}
@@ -85,18 +87,12 @@ export default function UsersPage() {
                       ))}
                     </TableCell>
                     <TableCell className='flex items-center space-x-2'>
-                      <Link
-                        href={`/dashboard/${condoId}/users/${user._id}`}
-                        className='relative top-px flex items-center gap-2 hover:text-indigo-500'
-                      >
-                        <Eye className='h-4 w-4' />
-                      </Link>
-                      <Link
-                        href={`/dashboard/${condoId}/users/${user._id}/edit`}
+                      <button
+                        type='button'
                         className='relative top-px flex items-center gap-2 hover:text-indigo-500'
                       >
                         <Pencil className='h-4 w-4' />
-                      </Link>
+                      </button>
                     </TableCell>
                   </TableRow>
                 ))
