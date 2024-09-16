@@ -15,6 +15,7 @@ const schema = defineSchema({
     isAuthorized: v.optional(v.boolean()),
     isSuperAdmin: v.optional(v.boolean()),
     isTenant: v.optional(v.boolean()),
+    isOwner: v.optional(v.boolean()),
     lastName: v.optional(v.string()),
     name: v.optional(v.string()),
     phone: v.optional(v.string()),
@@ -47,7 +48,7 @@ const schema = defineSchema({
     hoa: v.optional(v.number()),
     isRented: v.optional(v.boolean()),
     owners: v.optional(v.array(v.id('users'))),
-    phone: v.optional(v.number()),
+    phone: v.optional(v.string()),
     propertyType: v.union(v.literal('apartment'), v.literal('house')),
     tenants: v.optional(v.array(v.id('users'))),
     unitNumber: v.string()

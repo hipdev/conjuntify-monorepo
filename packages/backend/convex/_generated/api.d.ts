@@ -20,6 +20,7 @@ import type * as crons from "../crons.js";
 import type * as http from "../http.js";
 import type * as notifications from "../notifications.js";
 import type * as reservations from "../reservations.js";
+import type * as units from "../units.js";
 import type * as users from "../users.js";
 
 /**
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   notifications: typeof notifications;
   reservations: typeof reservations;
+  units: typeof units;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

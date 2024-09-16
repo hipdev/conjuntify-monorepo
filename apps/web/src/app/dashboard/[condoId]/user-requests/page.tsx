@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, CheckCircle, ChevronsUpDown, HousePlus, Plus, Trash2, XCircle } from 'lucide-react'
+import { Check, CheckCircle, HousePlus, Trash2, XCircle } from 'lucide-react'
 
 import {
   Table,
@@ -46,7 +46,8 @@ export default function UserRequestsPage() {
   const condoId = params.condoId as Id<'condos'>
 
   const userRequests = condoId ? useQuery(api.condos.getCondoTemporalUsers, { condoId }) : null
-  const userId = searchParams.get('userId')
+
+  const temporalUnitId = searchParams.get('temporalUnitId') as Id<'condoTemporalUnitUsers'> | null
 
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -58,20 +59,25 @@ export default function UserRequestsPage() {
 
   const openDrawer = (userId: string) => {
     const params = new URLSearchParams(searchParams)
-    params.set('userId', userId)
+    params.set('temporalUnitId', userId)
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
   const closeDrawer = () => {
     const params = new URLSearchParams(searchParams)
-    params.delete('userId')
+    params.delete('temporalUnitId')
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
   return (
     <div className='min-h-screen bg-black p-8 text-white'>
       {userRequests && userRequests.length > 0 && (
-        <AssignUnit userId={userId} closeDrawer={closeDrawer} userRequests={userRequests} />
+        <AssignUnit
+          temporalUnitId={temporalUnitId || null}
+          closeDrawer={closeDrawer}
+          userRequests={userRequests}
+          condoId={condoId}
+        />
       )}
 
       <div className='mx-auto max-w-6xl space-y-8'>

@@ -32,11 +32,16 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { Doc, Id } from '@packages/backend/convex/_generated/dataModel'
+import { useMutation } from 'convex/react'
+import { api } from '@packages/backend/convex/_generated/api'
+import { useToast } from '@/hooks/use-toast'
 
 type AssignUnitProps = {
-  userId: string | null
+  temporalUnitId: Id<'condoTemporalUnitUsers'> | null
   closeDrawer: () => void
-  userRequests: any[]
+  userRequests: Doc<'condoTemporalUnitUsers'>[]
+  condoId: Id<'condos'>
 }
 
 // Mock data for available units
@@ -47,9 +52,19 @@ const availableUnits = [
   { value: '202B', label: '202 - Tower B' }
 ]
 
-export const AssignUnit = ({ userId, closeDrawer, userRequests }: AssignUnitProps) => {
+export const AssignUnit = ({
+  temporalUnitId,
+  closeDrawer,
+  userRequests,
+  condoId
+}: AssignUnitProps) => {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
+  const createUnitAndAssign = useMutation(api.units.createUnitAndAssign)
+
+  const { toast } = useToast()
+
+  const temporalUnit = userRequests.find((user) => user._id === temporalUnitId)
 
   const { register, control, handleSubmit, watch } = useForm({
     defaultValues: {
@@ -59,20 +74,43 @@ export const AssignUnit = ({ userId, closeDrawer, userRequests }: AssignUnitProp
     }
   })
 
-  const onSubmit = (data: any) => {
-    console.log('Creating new unit:', data)
-    // Here you would typically call an API to create a new unit
+  const onSubmit = async (data: any) => {
+    if (!temporalUnitId || !temporalUnit) return
+
+    try {
+      await createUnitAndAssign({
+        buildingNumber: data.buildingNumber,
+        condoId,
+        isOwner: temporalUnit.isOwner || false,
+        phone: temporalUnit.phone,
+        propertyType: data.propertyType,
+        temporalUnitId,
+        unitNumber: data.unitNumber,
+        userId: temporalUnit.userId
+      })
+      closeDrawer()
+      toast({
+        title: 'Unidad asignada',
+        description: 'La unidad se ha asignado correctamente'
+      })
+    } catch (error) {
+      console.error('Error al crear y asignar unidad:', error)
+      toast({
+        title: 'Error al crear y asignar unidad',
+        description: 'Hubo un error al crear y asignar la unidad'
+      })
+    }
   }
   const propertyType = watch('propertyType')
 
   return (
-    <Drawer direction='right' open={!!userId} onOpenChange={closeDrawer}>
+    <Drawer direction='right' open={!!temporalUnitId} onOpenChange={closeDrawer}>
       <DrawerContent className='fixed bottom-0 right-0 mt-24 flex h-full w-[400px] flex-col border-b-0 border-t-0 border-l-neutral-700 bg-black text-black'>
         <DrawerHeader>
           <DrawerTitle className='text-white'>Asignar propiedad</DrawerTitle>
           <DrawerDescription>
-            {userId
-              ? `Asignar propiedad para ${userRequests.find((user) => user._id === userId)?.name}`
+            {temporalUnitId
+              ? `Asignar propiedad para ${userRequests.find((user) => user._id === temporalUnitId)?.name}`
               : 'Sin usuario seleccionado'}
           </DrawerDescription>
         </DrawerHeader>
