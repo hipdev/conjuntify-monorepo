@@ -11,8 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-
-import { toast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 
 export default function EditCondoPage() {
   const formRef = useRef<HTMLFormElement>(null)
@@ -49,15 +48,13 @@ export default function EditCondoPage() {
     if (hasChanged) {
       try {
         await updateCondo({ id: condoId as Id<'condos'>, ...condoData })
-        toast({
-          title: 'Condominio actualizado con éxito',
-          variant: 'default'
+        toast.success('Condominio actualizado con éxito', {
+          position: 'bottom-center'
         })
       } catch (error) {
         console.error('Error updating condo:', error)
-        toast({
-          title: 'Error actualizando el condominio',
-          variant: 'destructive'
+        toast.error('Error actualizando el condominio', {
+          position: 'bottom-center'
         })
       }
     } else {

@@ -1,7 +1,9 @@
 'use client'
 
+import { toast } from 'sonner'
 import { useRef } from 'react'
 import { useMutation } from 'convex/react'
+import { useRouter } from 'next/navigation'
 import { api } from '@packages/backend/convex/_generated/api'
 
 import { Input } from '@/components/ui/input'
@@ -9,8 +11,6 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { toast } from '@/hooks/use-toast'
-import { useRouter } from 'next/navigation'
 
 export default function Component() {
   const formRef = useRef<HTMLFormElement>(null)
@@ -39,16 +39,14 @@ export default function Component() {
 
     try {
       const newCondoId = await createCondo(condoData)
-      toast({
-        title: 'Condominio creado con éxito',
-        variant: 'default'
+      toast.success('Condominio creado con éxito', {
+        position: 'bottom-center'
       })
       router.push(`/dashboard/condos/${newCondoId}`)
     } catch (error) {
       console.error('Error creando el condominio:', error)
-      toast({
-        title: 'Error creando el condominio',
-        variant: 'destructive'
+      toast.error('Error creando el condominio', {
+        position: 'bottom-center'
       })
     }
   }

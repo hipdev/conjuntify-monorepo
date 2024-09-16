@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, CheckCircle, HousePlus, Trash2, XCircle } from 'lucide-react'
+import { CheckCircle, HousePlus, Trash2, XCircle } from 'lucide-react'
 
 import {
   Table,

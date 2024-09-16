@@ -35,7 +35,7 @@ import { Button } from '@/components/ui/button'
 import { Doc, Id } from '@packages/backend/convex/_generated/dataModel'
 import { useMutation } from 'convex/react'
 import { api } from '@packages/backend/convex/_generated/api'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 
 type AssignUnitProps = {
   temporalUnitId: Id<'condoTemporalUnitUsers'> | null
@@ -62,8 +62,6 @@ export const AssignUnit = ({
   const [value, setValue] = useState('')
   const createUnitAndAssign = useMutation(api.units.createUnitAndAssign)
 
-  const { toast } = useToast()
-
   const temporalUnit = userRequests.find((user) => user._id === temporalUnitId)
 
   const { register, control, handleSubmit, watch } = useForm({
@@ -89,15 +87,13 @@ export const AssignUnit = ({
         userId: temporalUnit.userId
       })
       closeDrawer()
-      toast({
-        title: 'Unidad asignada',
-        description: 'La unidad se ha asignado correctamente'
+      toast.success('Propiedad creada y asignada correctamente', {
+        position: 'bottom-center'
       })
     } catch (error) {
       console.error('Error al crear y asignar unidad:', error)
-      toast({
-        title: 'Error al crear y asignar unidad',
-        description: 'Hubo un error al crear y asignar la unidad'
+      toast.error('Error al crear y asignar unidad', {
+        position: 'bottom-center'
       })
     }
   }
