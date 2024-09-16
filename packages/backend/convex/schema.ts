@@ -40,6 +40,14 @@ const schema = defineSchema({
     zipCode: v.string()
   }).index('by_uniqueCode', ['uniqueCode']),
 
+  // Tabla de referencia de usuarios admins de un condominio
+  condoAdmins: defineTable({
+    condoId: v.id('condos'),
+    userId: v.id('users')
+  })
+    .index('by_condo', ['condoId'])
+    .index('by_user', ['userId']),
+
   // Tabla para definir los apartamentos de cada condominio
   condoUnits: defineTable({
     area: v.optional(v.number()),
@@ -55,6 +63,16 @@ const schema = defineSchema({
   })
     .index('by_condo', ['condoId'])
     .index('by_owners', ['owners']),
+
+  // Tabla de referencia de usuarios que viven en un apartamento
+  condoUnitUsers: defineTable({
+    condoUnitId: v.id('condoUnits'),
+    userId: v.id('users'),
+    isOwner: v.optional(v.boolean()),
+    isTenant: v.optional(v.boolean())
+  })
+    .index('by_condoUnit', ['condoUnitId'])
+    .index('by_user', ['userId']),
 
   // Tabla temporal con información de apartamentos y usuarios que dicen que viven en el
   condoTemporalUnitUsers: defineTable({

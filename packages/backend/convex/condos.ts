@@ -64,6 +64,12 @@ export const createCondo = mutation({
     // Update the user's condos array
     const condos = user?.condos || []
 
+    // Add new condo and user to the reference table
+    await ctx.db.insert('condoAdmins', {
+      condoId: condoId,
+      userId: userId
+    })
+
     await ctx.db.patch(userId, {
       condos: [...condos, condoId]
     })
