@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 
 import {
@@ -50,18 +51,19 @@ export const AssignUnit = ({ userId, closeDrawer, userRequests }: AssignUnitProp
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('')
 
-  const [selectedUnit, setSelectedUnit] = useState('')
-  const [newUnitNumber, setNewUnitNumber] = useState('')
-  const [newBuildingNumber, setNewBuildingNumber] = useState('')
+  const { register, control, handleSubmit, watch } = useForm({
+    defaultValues: {
+      propertyType: '',
+      unitNumber: '',
+      buildingNumber: ''
+    }
+  })
 
-  const handleCreateNewUnit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = (data: any) => {
+    console.log('Creating new unit:', data)
     // Here you would typically call an API to create a new unit
-    console.log('Creating new unit:', { newUnitNumber, newBuildingNumber })
-    // Reset form
-    setNewUnitNumber('')
-    setNewBuildingNumber('')
   }
+  const propertyType = watch('propertyType')
 
   return (
     <Drawer direction='right' open={!!userId} onOpenChange={closeDrawer}>
@@ -123,36 +125,41 @@ export const AssignUnit = ({ userId, closeDrawer, userRequests }: AssignUnitProp
         <div className='p-4 pt-0'>
           <h4 className='mb-4 mt-2 font-medium text-white'>Crear nueva propiedad</h4>
           <p className='mb-4 text-sm text-neutral-600'>
-            Esta es una creación rápida, posteriormente deberías actualizar los datos en la sección
-            de propiedades.
+            Esta es una creación rápida para asignar la propiedad al usuario, posteriormente
+            deberías actualizar los datos en la sección de propiedades.
           </p>
-          <form onSubmit={handleCreateNewUnit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className='flex flex-col gap-4'>
               <div>
                 <label htmlFor='unitNumber' className='block text-sm font-medium text-neutral-600'>
                   Tipo de propiedad
                 </label>
-                <Select name='propertyType'>
-                  <SelectTrigger className='w-full border border-neutral-600 bg-black text-neutral-400 hover:border-white/70'>
-                    <SelectValue placeholder='Tipo de propiedad' />
-                  </SelectTrigger>
-                  <SelectContent className='bg-black text-white'>
-                    <SelectItem value='light'>Apartamento</SelectItem>
-                    <SelectItem value='dark'>Casa</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Controller
+                  name='propertyType'
+                  control={control}
+                  render={({ field }) => (
+                    <Select required onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className='w-full border border-neutral-600 bg-black text-neutral-400 hover:border-white/70'>
+                        <SelectValue placeholder='Tipo de propiedad' />
+                      </SelectTrigger>
+                      <SelectContent className='bg-black text-white'>
+                        <SelectItem value='apartment'>Apartamento</SelectItem>
+                        <SelectItem value='house'>Casa</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
               <div>
                 <label htmlFor='unitNumber' className='block text-sm font-medium text-neutral-600'>
-                  Número de apartamento/casa
+                  {propertyType === 'apartment' ? 'Número de apartamento' : 'Número de casa'}
                 </label>
                 <input
                   type='text'
                   id='unitNumber'
-                  name='unitNumber'
+                  required
                   placeholder='Ej. 101'
-                  value={newUnitNumber}
-                  onChange={(e) => setNewUnitNumber(e.target.value)}
+                  {...register('unitNumber')}
                   className='mt-1 block w-full rounded-md border border-neutral-600 bg-black px-3 py-2 text-white shadow-sm outline-none focus:border-white/70 sm:text-sm'
                 />
               </div>
@@ -166,10 +173,8 @@ export const AssignUnit = ({ userId, closeDrawer, userRequests }: AssignUnitProp
                 <input
                   type='text'
                   id='buildingNumber'
-                  name='buildingNumber'
                   placeholder='Ej. Torre 33'
-                  value={newBuildingNumber}
-                  onChange={(e) => setNewBuildingNumber(e.target.value)}
+                  {...register('buildingNumber')}
                   className='mt-1 block w-full rounded-md border border-neutral-600 bg-black px-3 py-2 text-white shadow-sm outline-none focus:border-white/70 sm:text-sm'
                 />
               </div>
@@ -178,7 +183,7 @@ export const AssignUnit = ({ userId, closeDrawer, userRequests }: AssignUnitProp
                 type='submit'
                 className='mt-4 inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700'
               >
-                <Plus className='mr-2 h-4 w-4' /> Crear propiedad
+                <Plus className='mr-2 h-4 w-4' /> Crear propiedad y asignar
               </button>
             </div>
           </form>
