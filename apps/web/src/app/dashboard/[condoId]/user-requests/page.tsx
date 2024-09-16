@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle, Trash2, XCircle } from 'lucide-react'
+import { CheckCircle, HousePlus, Trash2, XCircle } from 'lucide-react'
 
 import {
   Table,
@@ -11,12 +11,23 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
+
 import { Input } from '@/components/ui/input'
 import { useQuery } from 'convex/react'
-import { useParams } from 'next/navigation'
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { api } from '@packages/backend/convex/_generated/api'
 import { Id } from '@packages/backend/convex/_generated/dataModel'
+
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger
+} from '@/components/ui/drawer'
 
 // Tipo para los datos de usuario
 type User = {
@@ -37,10 +48,15 @@ const statusValues = {
   rejected: 'Rechazado'
 }
 
-export default function Component() {
+export default function UserRequestsPage() {
   const params = useParams()
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const condoId = params.condoId as Id<'condos'>
+
   const userRequests = condoId ? useQuery(api.condos.getCondoTemporalUsers, { condoId }) : null
+  const userId = searchParams.get('userId')
 
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -50,8 +66,29 @@ export default function Component() {
     )
   )
 
+  const openDrawer = (userId: string) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('userId', userId)
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
+  const closeDrawer = () => {
+    const params = new URLSearchParams(searchParams)
+    params.delete('userId')
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
   return (
     <div className='min-h-screen bg-black p-8 text-white'>
+      <Drawer direction='right' open={!!userId} onOpenChange={closeDrawer}>
+        <DrawerContent className='fixed bottom-0 right-0 mt-24 flex h-full w-[400px] flex-col bg-white'>
+          <DrawerHeader>
+            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+            <DrawerDescription>This action cannot be undone.</DrawerDescription>
+          </DrawerHeader>
+        </DrawerContent>
+      </Drawer>
+
       <div className='mx-auto max-w-6xl space-y-8'>
         <h1 className='text-3xl font-bold'>Solicitudes de usuarios</h1>
 
@@ -113,8 +150,8 @@ export default function Component() {
                       {statusValues[user.status as keyof typeof statusValues] || 'N/A'}
                     </TableCell>
                     <TableCell className='flex items-center gap-5'>
-                      <button type='button'>
-                        <CheckCircle className='text-green-700' />
+                      <button onClick={() => openDrawer(user._id)} type='button'>
+                        <HousePlus className='text-green-700' />
                       </button>
                       <button type='button'>
                         <Trash2 className='text-red-800' />
