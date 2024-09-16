@@ -29,8 +29,6 @@ export default function UsersPage() {
 
   const users = condoId ? useQuery(api.condos.getUsersByCondoId, { condoId }) : []
 
-  console.log('users', users)
-
   const filteredUsers = users?.filter((user) =>
     Object.values(user).some((value) =>
       value?.toString().toLowerCase().includes(searchTerm.toLowerCase())

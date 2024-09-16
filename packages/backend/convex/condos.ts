@@ -243,8 +243,6 @@ export const getUsersByCondoId = query({
       .filter((q) => q.eq(q.field('condos'), [args.condoId]))
       .collect()
 
-    console.log('users', users)
-
     const usersWithUnits = await Promise.all(
       users.map(async (user) => {
         // Buscar unidades asociadas a este usuario
@@ -381,5 +379,116 @@ export const createCommonArea = mutation({
     })
 
     return newCommonArea
+  }
+})
+
+// Get common area by id
+export const getCommonArea = query({
+  args: { commonAreaId: v.id('commonAreas') },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx)
+
+    if (!args.commonAreaId) {
+      return null
+    }
+
+    if (!authUserId) {
+      throw new ConvexError('Usuario no autenticado')
+    }
+
+    const commonArea = await ctx.db.get(args.commonAreaId)
+    if (!commonArea) {
+      return null
+    }
+
+    const condo = await ctx.db.get(commonArea.condoId)
+    if (!condo || !condo.admins.includes(authUserId)) {
+      throw new ConvexError('No tienes permiso para ver esta área común')
+    }
+
+    return commonArea
+  }
+})
+
+// Update common area
+export const updateCommonArea = mutation({
+  args: {
+    commonAreaId: v.id('commonAreas'),
+    name: v.string(),
+    description: v.string(),
+    type: v.union(
+      v.literal('gym'),
+      v.literal('pool'),
+      v.literal('sauna'),
+      v.literal('steamRoom'),
+      v.literal('soccerField'),
+      v.literal('socialRoom')
+    ),
+    maxCapacity: v.number(),
+    isAvailable: v.boolean()
+  },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx)
+
+    if (!authUserId) {
+      throw new ConvexError('Usuario no autenticado')
+    }
+
+    const commonArea = await ctx.db.get(args.commonAreaId)
+    if (!commonArea) {
+      throw new ConvexError('Área común no encontrada')
+    }
+
+    const condo = await ctx.db.get(commonArea.condoId)
+    if (!condo || !condo.admins.includes(authUserId)) {
+      throw new ConvexError('No tienes permiso para editar esta área común')
+    }
+
+    await ctx.db.patch(args.commonAreaId, {
+      name: args.name,
+      description: args.description,
+      type: args.type,
+      maxCapacity: args.maxCapacity,
+      isAvailable: args.isAvailable
+    })
+
+    return args.commonAreaId
+  }
+})
+
+// Delete common area
+export const deleteCommonArea = mutation({
+  args: { commonAreaId: v.id('commonAreas') },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx)
+
+    if (!authUserId) {
+      throw new ConvexError('Usuario no autenticado')
+    }
+
+    const commonArea = await ctx.db.get(args.commonAreaId)
+    if (!commonArea) {
+      throw new ConvexError('Área común no encontrada')
+    }
+
+    const condo = await ctx.db.get(commonArea.condoId)
+    if (!condo || !condo.admins.includes(authUserId)) {
+      throw new ConvexError('No tienes permiso para eliminar esta área común')
+    }
+
+    // Check if there are any active reservations
+    const activeReservations = await ctx.db
+      .query('reservations')
+      .filter((q) => q.eq(q.field('commonAreaId'), args.commonAreaId))
+      .filter((q) => q.neq(q.field('status'), 'cancelled'))
+      .filter((q) => q.neq(q.field('status'), 'completed'))
+      .first()
+
+    if (activeReservations) {
+      return 'hasReservations'
+    }
+
+    await ctx.db.delete(args.commonAreaId)
+    return 'success'
   }
 })

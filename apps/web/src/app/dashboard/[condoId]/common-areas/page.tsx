@@ -13,10 +13,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useMutation, useQuery } from 'convex/react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { api } from '@packages/backend/convex/_generated/api'
 import { Id } from '@packages/backend/convex/_generated/dataModel'
 import { CreateCommonArea } from './_components/new-common-area'
+import { EditCommonArea } from './_components/edit-common-area'
 
 const areaTypes = {
   gym: 'Gimnasio',
@@ -34,9 +35,13 @@ export default function CommonAreasPage() {
   const params = useParams()
   const router = useRouter()
   const condoId = params.condoId as Id<'condos'>
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
 
   const commonAreas = useQuery(api.condos.getCommonAreas, { condoId })
   const updateCommonAreaAvailability = useMutation(api.condos.updateCommonAreaAvailability)
+
+  const commonAreaId = searchParams.get('editCommonAreaId') as Id<'commonAreas'> | null
 
   useEffect(() => {
     if (commonAreas) {
@@ -61,6 +66,12 @@ export default function CommonAreasPage() {
     router.push(`/dashboard/${condoId}/common-areas/${areaId}/reservations`)
   }
 
+  const handleEditCommonArea = (areaId: Id<'commonAreas'>) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('editCommonAreaId', areaId)
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
   return (
     <div className='min-h-screen bg-black p-8 text-white'>
       <CreateCommonArea
@@ -68,6 +79,7 @@ export default function CommonAreasPage() {
         onClose={() => setIsCreateDrawerOpen(false)}
         condoId={condoId}
       />
+      {commonAreaId && <EditCommonArea />}
       <div className='mx-auto max-w-6xl space-y-8'>
         <div className='flex items-center justify-between'>
           <h1 className='text-3xl font-bold'>Áreas Comunes</h1>
@@ -123,6 +135,7 @@ export default function CommonAreasPage() {
                       <button
                         type='button'
                         className='relative top-px flex items-center gap-2 hover:text-indigo-500'
+                        onClick={() => handleEditCommonArea(area._id)}
                       >
                         <Pencil className='h-4 w-4' />
                       </button>
