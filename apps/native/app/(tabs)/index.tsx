@@ -13,6 +13,7 @@ import {
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '@packages/backend/convex/_generated/api'
 import Toast from 'react-native-toast-message'
+import { indigoColor, lightIndigoColor } from '@/constants/Colors'
 
 type FormData = {
   uniqueCode: string
@@ -95,7 +96,7 @@ export default function HomeScreen() {
                 placeholder='Escribe tu nombre'
               />
               <TouchableOpacity
-                className='rounded bg-blue-500 px-4 py-2'
+                className='rounded bg-indigo-500 px-4 py-2'
                 onPress={handleNameSubmit}
               >
                 <Text className='text-center font-bold text-white'>Enviar</Text>
@@ -116,7 +117,7 @@ export default function HomeScreen() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     className={clsx(
-                      'w-full rounded-md border border-gray-300 p-4',
+                      'w-full rounded-md border border-gray-300 p-4 focus:border-indigo-500',
                       errors.uniqueCode ? 'mb-2 border-red-500' : 'mb-4'
                     )}
                     onBlur={onBlur}
@@ -138,7 +139,7 @@ export default function HomeScreen() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     className={clsx(
-                      'w-full rounded-md border border-gray-300 p-4',
+                      'w-full rounded-md border border-gray-300 p-4 focus:border-indigo-500',
                       errors.unitNumber ? 'mb-2 border-red-500' : 'mb-4'
                     )}
                     onBlur={onBlur}
@@ -160,7 +161,7 @@ export default function HomeScreen() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     className={clsx(
-                      'mb-4 w-full rounded-md border border-gray-300 p-4',
+                      'mb-4 w-full rounded-md border border-gray-300 p-4 focus:border-indigo-500',
                       errors.buildingNumber ? 'mb-2 border-red-500' : 'mb-4'
                     )}
                     onBlur={onBlur}
@@ -179,7 +180,7 @@ export default function HomeScreen() {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     className={clsx(
-                      'w-full rounded-md border border-gray-300 p-4',
+                      'w-full rounded-md border border-gray-300 p-4 focus:border-indigo-500',
                       errors.phone ? 'mb-2 border-red-500' : 'mb-4'
                     )}
                     onBlur={onBlur}
@@ -200,7 +201,12 @@ export default function HomeScreen() {
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <View className='mb-4 flex-row items-center'>
-                    <Switch value={value} onValueChange={onChange} />
+                    <Switch
+                      value={value}
+                      onValueChange={onChange}
+                      trackColor={{ false: '#D1D5DB', true: lightIndigoColor }}
+                      thumbColor={value ? indigoColor : '#F3F4F6'}
+                    />
                     <Text className='ml-2'>Podemos contactar contigo por WhatsApp</Text>
                   </View>
                 )}
@@ -211,7 +217,12 @@ export default function HomeScreen() {
                 control={control}
                 render={({ field: { value, onChange } }) => (
                   <View className='mb-4 flex-row items-center'>
-                    <Switch value={value} onValueChange={onChange} />
+                    <Switch
+                      value={value}
+                      onValueChange={onChange}
+                      trackColor={{ false: '#D1D5DB', true: lightIndigoColor }}
+                      thumbColor={value ? indigoColor : '#F3F4F6'}
+                    />
                     <Text className='ml-2'>Soy el propietario</Text>
                   </View>
                 )}
@@ -224,7 +235,7 @@ export default function HomeScreen() {
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
-                        className='mb-4 w-full rounded-md border border-gray-300 p-4'
+                        className='mb-4 w-full rounded-md border border-gray-300 p-4 focus:border-indigo-500'
                         onBlur={onBlur}
                         onChangeText={onChange}
                         value={value}
@@ -239,7 +250,7 @@ export default function HomeScreen() {
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
-                        className='mb-4 w-full rounded-md border border-gray-300 p-4'
+                        className='mb-4 w-full rounded-md border border-gray-300 p-4 focus:border-indigo-500'
                         onBlur={onBlur}
                         onChangeText={onChange}
                         value={value}
@@ -253,7 +264,7 @@ export default function HomeScreen() {
               )}
 
               <TouchableOpacity
-                className='mt-10 rounded bg-blue-500 px-4 py-4'
+                className='mt-10 rounded bg-indigo-500 px-4 py-4'
                 onPress={handleSubmit(handleDetailsSubmit)}
               >
                 <Text className='text-center font-bold text-white'>Guardar</Text>

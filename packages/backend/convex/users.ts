@@ -9,7 +9,6 @@ export const currentUser = query({
     if (userId === null) {
       return null
     }
-    const user = await ctx.db.get(userId)
 
     return await ctx.db.get(userId)
   }
@@ -93,5 +92,24 @@ export const createCondoApplication = mutation({
       applicationId,
       error: null
     }
+  }
+})
+
+export const updateUser = mutation({
+  args: {
+    name: v.optional(v.string()),
+    lastName: v.optional(v.string())
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+    if (userId === null) {
+      throw new Error('No estás autenticado')
+    }
+
+    const updates: { name?: string; lastName?: string } = {}
+    if (args.name !== undefined) updates.name = args.name
+    if (args.lastName !== undefined) updates.lastName = args.lastName
+
+    return await ctx.db.patch(userId, updates)
   }
 })
