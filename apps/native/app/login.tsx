@@ -1,67 +1,86 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { Link, Redirect } from "expo-router";
-import { useConvexAuth } from "convex/react";
-import { ActivityIndicator } from "react-native";
+import React, { useState } from 'react'
+import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { Link, Redirect, useRouter } from 'expo-router'
+import { useConvexAuth } from 'convex/react'
+import { ActivityIndicator } from 'react-native'
+import { useAuthActions } from '@convex-dev/auth/dist/react'
+import Toast from 'react-native-toast-message'
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { isLoading, isAuthenticated } = useConvexAuth();
-
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const { isLoading, isAuthenticated } = useConvexAuth()
+  const { signIn } = useAuthActions()
+  const router = useRouter()
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-white dark:bg-gray-900">
-        <ActivityIndicator size="large" color="#3B82F6" />
-        <Text className="mt-4 text-xl font-semibold text-gray-800 dark:text-white">
+      <View className='flex-1 items-center justify-center bg-white dark:bg-gray-900'>
+        <ActivityIndicator size='large' color='#3B82F6' />
+        <Text className='mt-4 text-xl font-semibold text-gray-800 dark:text-white'>
           Cargando Conjuntify...
         </Text>
       </View>
-    );
+    )
   }
 
   if (isAuthenticated) {
-    return <Redirect href="/(tabs)/" />;
+    return <Redirect href='/(tabs)/' />
   }
 
-  const handleLogin = () => {
-    // Implement login logic here
-    console.log("Login attempted with:", email, password);
-  };
+  const handleLogin = async () => {
+    try {
+      // Intenta iniciar sesión con Convex Auth
+      await signIn('password', { email, password })
 
+      // Si el inicio de sesión es exitoso, redirige al usuario
+      router.replace('/(tabs)/')
+
+      Toast.show({
+        type: 'success',
+        text1: 'Inicio de sesión exitoso',
+        position: 'bottom'
+      })
+    } catch (error) {
+      // Si hay un error, muestra un mensaje al usuario
+      Toast.show({
+        type: 'error',
+        text1: 'Error al iniciar sesión',
+        text2: error instanceof Error ? error.message : 'Intenta de nuevo',
+        position: 'bottom'
+      })
+    }
+  }
   return (
-    <View className="flex-1 justify-center items-center p-6 bg-white dark:bg-gray-900">
-      <Text className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+    <View className='flex-1 items-center justify-center bg-white p-6 dark:bg-gray-900'>
+      <Text className='mb-6 text-3xl font-bold text-gray-800 dark:text-white'>
         Entrar a Conjuntify
       </Text>
       <TextInput
-        className="w-full bg-gray-100 text-gray-800 border border-gray-300 rounded-lg py-3 px-4 mb-3"
-        placeholder="Correo"
+        className='mb-3 w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-3 text-gray-800 focus:border-indigo-500'
+        placeholder='Correo'
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
+        keyboardType='email-address'
+        autoCapitalize='none'
       />
       <TextInput
-        className="w-full bg-gray-100 text-gray-800 border border-gray-300 rounded-lg py-3 px-4 mb-6"
-        placeholder="Contraseña"
+        className='mb-6 w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-3 text-gray-800 focus:border-indigo-500'
+        placeholder='Contraseña'
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
       <TouchableOpacity
-        className="w-full bg-blue-500 rounded-lg py-3 px-4 mb-3"
+        className='mb-3 w-full rounded-lg bg-indigo-500 px-4 py-3'
         onPress={handleLogin}
       >
-        <Text className="text-white text-center font-bold">Entrar</Text>
+        <Text className='text-center font-bold text-white'>Entrar</Text>
       </TouchableOpacity>
-      <Link href="/signup" asChild>
+      <Link href='/signup' asChild>
         <TouchableOpacity>
-          <Text className="text-blue-500">
-            ¿No tienes una cuenta? Registrate
-          </Text>
+          <Text className='mt-10 font-bold text-indigo-500'>¿No tienes una cuenta? Registrate</Text>
         </TouchableOpacity>
       </Link>
     </View>
-  );
+  )
 }

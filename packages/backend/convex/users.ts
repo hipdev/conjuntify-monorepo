@@ -16,7 +16,8 @@ export const currentUser = query({
 
 export const updateUserName = mutation({
   args: {
-    name: v.string()
+    name: v.string(),
+    lastName: v.string()
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx)
@@ -24,7 +25,7 @@ export const updateUserName = mutation({
     if (userId === null) {
       return null
     }
-    return await ctx.db.patch(userId, { name: args.name })
+    return await ctx.db.patch(userId, { name: args.name, lastName: args.lastName })
   }
 })
 
