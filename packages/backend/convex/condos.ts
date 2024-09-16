@@ -237,8 +237,6 @@ export const getUsersByCondoId = query({
       throw new ConvexError('No tienes permiso para ver los usuarios de este condominio')
     }
 
-    console.log('args.condoId', args.condoId)
-
     // Buscar usuarios que tengan este condominio en su array de condos
     const users = await ctx.db
       .query('users')
@@ -284,6 +282,8 @@ export const getUsersByCondoId = query({
     return usersWithUnits
   }
 })
+
+// COMMON AREAS
 
 export const updateCommonAreaAvailability = mutation({
   args: {
@@ -339,5 +339,47 @@ export const getCommonAreas = query({
     )
 
     return areasWithReservations
+  }
+})
+
+// Create common area for condo
+export const createCommonArea = mutation({
+  args: {
+    condoId: v.id('condos'),
+    name: v.string(),
+    description: v.string(),
+    type: v.union(
+      v.literal('gym'),
+      v.literal('pool'),
+      v.literal('sauna'),
+      v.literal('steamRoom'),
+      v.literal('soccerField'),
+      v.literal('socialRoom')
+    ),
+    maxCapacity: v.number(),
+    isAvailable: v.boolean()
+  },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx)
+
+    if (!authUserId) {
+      throw new ConvexError('Usuario no autenticado')
+    }
+
+    const condo = await ctx.db.get(args.condoId)
+    if (!condo || !condo.admins.includes(authUserId)) {
+      throw new ConvexError('No tienes permiso para crear áreas comunes en este condominio')
+    }
+
+    const newCommonArea = await ctx.db.insert('commonAreas', {
+      condoId: args.condoId,
+      name: args.name,
+      description: args.description,
+      type: args.type,
+      maxCapacity: args.maxCapacity,
+      isAvailable: true
+    })
+
+    return newCommonArea
   }
 })

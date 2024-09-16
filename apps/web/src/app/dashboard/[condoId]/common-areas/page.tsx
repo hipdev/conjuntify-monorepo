@@ -16,6 +16,7 @@ import { useMutation, useQuery } from 'convex/react'
 import { useParams, useRouter } from 'next/navigation'
 import { api } from '@packages/backend/convex/_generated/api'
 import { Id } from '@packages/backend/convex/_generated/dataModel'
+import { CreateCommonArea } from './_components/new-common-area'
 
 const areaTypes = {
   gym: 'Gimnasio',
@@ -28,6 +29,8 @@ const areaTypes = {
 
 export default function CommonAreasPage() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false)
+
   const params = useParams()
   const router = useRouter()
   const condoId = params.condoId as Id<'condos'>
@@ -60,10 +63,18 @@ export default function CommonAreasPage() {
 
   return (
     <div className='min-h-screen bg-black p-8 text-white'>
+      <CreateCommonArea
+        isOpen={isCreateDrawerOpen}
+        onClose={() => setIsCreateDrawerOpen(false)}
+        condoId={condoId}
+      />
       <div className='mx-auto max-w-6xl space-y-8'>
         <div className='flex items-center justify-between'>
           <h1 className='text-3xl font-bold'>Áreas Comunes</h1>
-          <Button className='bg-indigo-600 hover:bg-indigo-700'>
+          <Button
+            className='bg-indigo-600 hover:bg-indigo-700'
+            onClick={() => setIsCreateDrawerOpen(true)}
+          >
             <Plus className='mr-2 h-4 w-4' /> Crear Área Común
           </Button>
         </div>
@@ -81,9 +92,9 @@ export default function CommonAreasPage() {
               <TableRow className='text-white hover:bg-neutral-800'>
                 <TableHead>Nombre</TableHead>
                 <TableHead>Tipo</TableHead>
-                <TableHead>Capacidad Máxima</TableHead>
-                <TableHead>Total Reservas</TableHead>
-                <TableHead>Disponible</TableHead>
+                <TableHead className='text-center'>Capacidad Máxima</TableHead>
+                <TableHead className='text-center'> Total Reservas</TableHead>
+                <TableHead className='text-center'>Cupos Disponibles</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead>Acciones</TableHead>
               </TableRow>
@@ -97,14 +108,14 @@ export default function CommonAreasPage() {
                   >
                     <TableCell className='font-medium'>{area.name}</TableCell>
                     <TableCell>{areaTypes[area.type as keyof typeof areaTypes]}</TableCell>
-                    <TableCell>{area.maxCapacity}</TableCell>
-                    <TableCell>{area.totalReservations}</TableCell>
-                    <TableCell>{area.availableCapacity}</TableCell>
+                    <TableCell className='text-center'>{area.maxCapacity}</TableCell>
+                    <TableCell className='text-center'>{area.totalReservations}</TableCell>
+                    <TableCell className='text-center'>{area.availableCapacity}</TableCell>
                     <TableCell>{area.isAvailable ? 'Disponible' : 'No disponible'}</TableCell>
-                    <TableCell className='flex items-center space-x-2'>
+                    <TableCell className='flex items-center gap-4'>
                       <button
                         type='button'
-                        className='relative top-px flex items-center gap-2 hover:text-indigo-500'
+                        className='relative top-px hover:text-indigo-500'
                         onClick={() => handleViewReservations(area._id)}
                       >
                         <Bell className='h-4 w-4' />
