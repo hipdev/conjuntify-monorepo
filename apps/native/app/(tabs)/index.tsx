@@ -4,9 +4,11 @@ import { useQuery, useMutation } from 'convex/react'
 import { api } from '@packages/backend/convex/_generated/api'
 import Toast from 'react-native-toast-message'
 import { RequestUnit } from '@/components/home/request-unit'
+import PendingRequestsScreen from '@/components/home/pending-requests'
 
 export default function HomeScreen() {
   const user = useQuery(api.users.currentUser)
+  const pendingRequests = useQuery(api.users.getPendingRequests)
   const updateUser = useMutation(api.users.updateUserName)
 
   const [name, setName] = useState('')
@@ -26,6 +28,12 @@ export default function HomeScreen() {
 
   if (!user) {
     return <Text>Loading...</Text>
+  }
+
+  console.log(pendingRequests, 'pendingRequests')
+
+  if (pendingRequests && pendingRequests.length > 0) {
+    return <PendingRequestsScreen requests={pendingRequests} onNewRequest={() => {}} />
   }
 
   return (
@@ -57,7 +65,7 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
           ) : (
-            <RequestUnit user={user} />
+            <RequestUnit />
           )}
         </View>
       </ScrollView>

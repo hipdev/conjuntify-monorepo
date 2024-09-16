@@ -114,3 +114,22 @@ export const updateUser = mutation({
     return await ctx.db.patch(userId, updates)
   }
 })
+
+// Obtener solicitudes pendientes de un usuario para un condominio y una propiedad
+export const getPendingRequests = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+    if (userId === null) {
+      throw new Error('No estás autenticado')
+    }
+
+    const pendingRequests = await ctx.db
+      .query('condoTemporalUnitUsers')
+      .filter((q) => q.eq(q.field('userId'), userId))
+      .filter((q) => q.eq(q.field('status'), 'pending'))
+      .collect()
+
+    return pendingRequests
+  }
+})

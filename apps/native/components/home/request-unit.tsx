@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { useMutation } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import Toast from 'react-native-toast-message'
 import { Controller, useForm } from 'react-hook-form'
 import { Switch, Text, TextInput, TouchableOpacity, View } from 'react-native'
@@ -19,7 +19,8 @@ type FormData = {
   propertyRegistration: string
 }
 
-export const RequestUnit = ({ user }: { user: Doc<'users'> }) => {
+export const RequestUnit = () => {
+  const user = useQuery(api.users.currentUser)
   const createCondoApplication = useMutation(api.users.createCondoApplication)
 
   const {
@@ -63,7 +64,7 @@ export const RequestUnit = ({ user }: { user: Doc<'users'> }) => {
 
   return (
     <View className='w-full'>
-      <Text className='mb-2 text-2xl font-bold'>Bienvenido {user.name}!</Text>
+      <Text className='mb-2 text-2xl font-bold'>Bienvenido {user?.name}!</Text>
       <Text className='mb-5 text-lg font-semibold'>Por favor, proporciona más detalles:</Text>
 
       <Controller
