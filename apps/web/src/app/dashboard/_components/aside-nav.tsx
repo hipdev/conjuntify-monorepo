@@ -1,6 +1,6 @@
 'use client'
 
-import { Bell, Building2, Handshake, Home } from 'lucide-react'
+import { Bell, Building2, Handshake, Home, Users } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { useSidebarStore } from './sidebar-store'
@@ -25,7 +25,7 @@ export default function AsideNav({ condoId }: { condoId: Id<'condos'> }) {
       />
       <CustomLink
         href={`/dashboard/${condoId}/users`}
-        IconComponent={<Bell size={20} className={iconClassName} />}
+        IconComponent={<Users size={20} className={iconClassName} />}
         label='Usuarios'
         isCollapsed={isCollapsed}
       />
@@ -55,7 +55,7 @@ export default function AsideNav({ condoId }: { condoId: Id<'condos'> }) {
       />
 
       <CustomLink
-        href='/'
+        href={`/dashboard/${condoId}/common-areas`}
         IconComponent={<Handshake size={20} className={iconClassName} />}
         label='Áreas comunes'
         isCollapsed={isCollapsed}

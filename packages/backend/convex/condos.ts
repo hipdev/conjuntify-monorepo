@@ -284,3 +284,60 @@ export const getUsersByCondoId = query({
     return usersWithUnits
   }
 })
+
+export const updateCommonAreaAvailability = mutation({
+  args: {
+    commonAreaId: v.id('commonAreas'),
+    isAvailable: v.boolean()
+  },
+  handler: async (ctx, args) => {
+    const { commonAreaId, isAvailable } = args
+    await ctx.db.patch(commonAreaId, { isAvailable })
+  }
+})
+
+// Get common areas by condo id
+export const getCommonAreas = query({
+  args: { condoId: v.id('condos') },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx)
+
+    if (!authUserId) {
+      throw new ConvexError('Usuario no autenticado')
+    }
+
+    const condo = await ctx.db.get(args.condoId)
+    if (!condo || !condo.admins.includes(authUserId)) {
+      throw new ConvexError('No tienes permiso para ver las áreas comunes de este condominio')
+    }
+
+    const commonAreas = await ctx.db
+      .query('commonAreas')
+      .filter((q) => q.eq(q.field('condoId'), args.condoId))
+      .collect()
+
+    const areasWithReservations = await Promise.all(
+      commonAreas.map(async (area) => {
+        const reservations = await ctx.db
+          .query('reservations')
+          .filter((q) => q.eq(q.field('commonAreaId'), area._id))
+          .filter((q) => q.neq(q.field('status'), 'cancelled'))
+          .filter((q) => q.neq(q.field('status'), 'completed'))
+          .collect()
+
+        const totalReservations = reservations.length
+        const availableCapacity = Math.max(0, area.maxCapacity - totalReservations)
+        const isAvailable = availableCapacity > 0
+
+        return {
+          ...area,
+          totalReservations,
+          availableCapacity,
+          isAvailable
+        }
+      })
+    )
+
+    return areasWithReservations
+  }
+})
