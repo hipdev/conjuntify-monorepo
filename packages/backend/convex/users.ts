@@ -32,7 +32,6 @@ export const updateUserName = mutation({
 export const createCondoApplication = mutation({
   args: {
     name: v.string(),
-    floorNumber: v.string(),
     uniqueCode: v.string(),
     unitNumber: v.string(),
     buildingNumber: v.string(),
@@ -77,7 +76,6 @@ export const createCondoApplication = mutation({
 
     const applicationId = await ctx.db.insert('condoTemporalUnitUsers', {
       name: args.name,
-      floorNumber: args.floorNumber,
       condoId: condoId._id,
       userId: userId,
       unitNumber: args.unitNumber,

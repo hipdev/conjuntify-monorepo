@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle, HousePlus, Trash2, XCircle } from 'lucide-react'
+import { Check, CheckCircle, ChevronsUpDown, HousePlus, Plus, Trash2, XCircle } from 'lucide-react'
 
 import {
   Table,
@@ -17,17 +17,7 @@ import { useQuery } from 'convex/react'
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { api } from '@packages/backend/convex/_generated/api'
 import { Id } from '@packages/backend/convex/_generated/dataModel'
-
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger
-} from '@/components/ui/drawer'
+import { AssignUnit } from './_components/assign-unit'
 
 // Tipo para los datos de usuario
 type User = {
@@ -80,14 +70,9 @@ export default function UserRequestsPage() {
 
   return (
     <div className='min-h-screen bg-black p-8 text-white'>
-      <Drawer direction='right' open={!!userId} onOpenChange={closeDrawer}>
-        <DrawerContent className='fixed bottom-0 right-0 mt-24 flex h-full w-[400px] flex-col bg-white'>
-          <DrawerHeader>
-            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-            <DrawerDescription>This action cannot be undone.</DrawerDescription>
-          </DrawerHeader>
-        </DrawerContent>
-      </Drawer>
+      {userRequests && userRequests.length > 0 && (
+        <AssignUnit userId={userId} closeDrawer={closeDrawer} userRequests={userRequests} />
+      )}
 
       <div className='mx-auto max-w-6xl space-y-8'>
         <h1 className='text-3xl font-bold'>Solicitudes de usuarios</h1>

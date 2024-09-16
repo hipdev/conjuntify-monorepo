@@ -41,13 +41,14 @@ const schema = defineSchema({
 
   // Tabla para definir los apartamentos de cada condominio
   condoUnits: defineTable({
+    area: v.optional(v.number()),
     buildingNumber: v.optional(v.string()),
     condoId: v.id('condos'),
-    floorNumber: v.string(),
     hoa: v.optional(v.number()),
-    isRented: v.boolean(),
+    isRented: v.optional(v.boolean()),
     owners: v.optional(v.array(v.id('users'))),
     phone: v.optional(v.number()),
+    propertyType: v.union(v.literal('apartment'), v.literal('house')),
     tenants: v.optional(v.array(v.id('users'))),
     unitNumber: v.string()
   })
@@ -59,7 +60,6 @@ const schema = defineSchema({
     name: v.string(),
     buildingNumber: v.string(),
     condoId: v.id('condos'),
-    floorNumber: v.string(),
     isOwner: v.optional(v.boolean()),
     isTenant: v.optional(v.boolean()),
     phone: v.string(),

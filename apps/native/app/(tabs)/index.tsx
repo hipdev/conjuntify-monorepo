@@ -23,7 +23,6 @@ type FormData = {
   isOwner: boolean
   idn: string
   propertyRegistration: string
-  floorNumber: string
 }
 
 export default function HomeScreen() {
@@ -45,8 +44,7 @@ export default function HomeScreen() {
       propertyRegistration: '',
       uniqueCode: '',
       unitNumber: '',
-      withWhatsapp: false,
-      floorNumber: ''
+      withWhatsapp: false
     }
   })
 
@@ -173,27 +171,6 @@ export default function HomeScreen() {
                   />
                 )}
                 name='buildingNumber'
-              />
-
-              <Controller
-                control={control}
-                rules={{
-                  required: true
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    className={clsx(
-                      'w-full rounded-md border border-gray-300 p-4',
-                      errors.uniqueCode ? 'mb-2 border-red-500' : 'mb-4'
-                    )}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    placeholder='Número de piso (Si es necesario)'
-                    placeholderTextColor='#777'
-                  />
-                )}
-                name='floorNumber'
               />
 
               <Controller

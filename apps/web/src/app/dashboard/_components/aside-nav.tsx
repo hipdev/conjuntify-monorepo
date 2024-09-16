@@ -50,7 +50,7 @@ export default function AsideNav({ condoId }: { condoId: Id<'condos'> }) {
       <CustomLink
         href='/'
         IconComponent={<Building2 size={20} className={iconClassName} />}
-        label='Apartamentos'
+        label='Propiedades'
         isCollapsed={isCollapsed}
       />
 
