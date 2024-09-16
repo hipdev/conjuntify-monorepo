@@ -58,9 +58,17 @@ export const createUnitAndAssign = mutation({
 
     // Actualizar el usuario
     const user = await ctx.db.get(args.userId)
+
     if (user) {
+      // Ensure the condo is not already in the user's condos array
+      const userCondos = user.condos || []
+      const updatedCondos = userCondos.includes(args.condoId)
+        ? userCondos
+        : [...userCondos, args.condoId]
+
       await ctx.db.patch(args.userId, {
-        ...(args.isOwner ? { isOwner: true } : { isTenant: true })
+        ...(args.isOwner ? { isOwner: true } : { isTenant: true }),
+        condos: updatedCondos
       })
     }
 

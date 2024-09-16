@@ -4,6 +4,7 @@ import { v } from 'convex/values'
 import { ConvexError } from 'convex/values'
 
 import { filter } from 'convex-helpers/server/filter'
+import { Id } from './_generated/dataModel'
 
 export const createCondo = mutation({
   args: {
@@ -212,5 +213,67 @@ export const getCondoTemporalUsers = query({
       .filter((q) => q.eq(q.field('condoId'), args.condoId))
       .collect()
     return temporalUsers
+  }
+})
+
+// getUsersByCondoId
+export const getUsersByCondoId = query({
+  args: { condoId: v.id('condos') },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx)
+
+    if (!authUserId) {
+      throw new ConvexError('Usuario no autenticado')
+    }
+
+    const condo = await ctx.db.get(args.condoId)
+    if (!condo || !condo.admins.includes(authUserId)) {
+      throw new ConvexError('No tienes permiso para ver los usuarios de este condominio')
+    }
+
+    console.log('args.condoId', args.condoId)
+
+    // Buscar usuarios que tengan este condominio en su array de condos
+    const users = await ctx.db
+      .query('users')
+      .filter((q) => q.eq(q.field('condos'), [args.condoId]))
+      .collect()
+
+    console.log('users', users)
+
+    const usersWithUnits = await Promise.all(
+      users.map(async (user) => {
+        // Buscar unidades asociadas a este usuario
+        const units = await ctx.db
+          .query('condoUnits')
+          .filter((q) => q.eq(q.field('condoId'), args.condoId))
+          .filter((q) =>
+            q.or(q.eq(q.field('owners'), [user._id]), q.eq(q.field('tenants'), [user._id]))
+          )
+          .collect()
+
+        const userUnits = units.map((unit) => ({
+          _id: unit._id,
+          unitNumber: unit.unitNumber,
+          buildingNumber: unit.buildingNumber,
+          propertyType: unit.propertyType,
+          isOwner: unit.owners?.includes(user._id) || false,
+          isTenant: unit.tenants?.includes(user._id) || false
+        }))
+
+        return {
+          _id: user._id,
+          name: user.name,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone,
+          isOwner: user.isOwner,
+          isTenant: user.isTenant,
+          units: userUnits
+        }
+      })
+    )
+
+    return usersWithUnits
   }
 })

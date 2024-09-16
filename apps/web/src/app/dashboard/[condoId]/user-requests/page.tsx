@@ -128,7 +128,7 @@ export default function UserRequestsPage() {
                     <TableCell>
                       {statusValues[user.status as keyof typeof statusValues] || 'N/A'}
                     </TableCell>
-                    <TableCell className='flex items-center'>
+                    <TableCell className='flex items-center gap-3'>
                       {user.status == 'pending' ? (
                         <>
                           <button onClick={() => openDrawer(user._id)} type='button'>
