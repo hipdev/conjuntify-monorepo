@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle, HousePlus, Trash2, XCircle } from 'lucide-react'
+import { CheckCircle, Eye, HousePlus, Trash2, XCircle } from 'lucide-react'
 
 import {
   Table,
@@ -18,19 +18,7 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 import { api } from '@packages/backend/convex/_generated/api'
 import { Id } from '@packages/backend/convex/_generated/dataModel'
 import { AssignUnit } from './_components/assign-unit'
-
-// Tipo para los datos de usuario
-type User = {
-  apartamento: string
-  edificio: string
-  celular: string
-  whatsapp: boolean
-  propietario: boolean
-  identificacion: string
-  matricula: string
-}
-
-// Datos de ejemplo
+import Link from 'next/link'
 
 const statusValues = {
   pending: 'Pendiente',
@@ -140,13 +128,26 @@ export default function UserRequestsPage() {
                     <TableCell>
                       {statusValues[user.status as keyof typeof statusValues] || 'N/A'}
                     </TableCell>
-                    <TableCell className='flex items-center gap-5'>
-                      <button onClick={() => openDrawer(user._id)} type='button'>
-                        <HousePlus className='text-green-700' />
-                      </button>
-                      <button type='button'>
-                        <Trash2 className='text-red-800' />
-                      </button>
+                    <TableCell className='flex items-center'>
+                      {user.status == 'pending' ? (
+                        <>
+                          <button onClick={() => openDrawer(user._id)} type='button'>
+                            <HousePlus className='text-green-700' />
+                          </button>
+                          <button type='button'>
+                            <Trash2 className='text-red-800' />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            href={`/dashboard/${condoId}/user-requests/${user._id}`}
+                            className='relative top-px flex items-center gap-2 hover:text-indigo-500'
+                          >
+                            Ver <Eye className='h-4 w-4' />
+                          </Link>
+                        </>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))

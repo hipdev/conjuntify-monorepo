@@ -1,6 +1,7 @@
 import { ConvexError, v } from 'convex/values'
-import { mutation } from './_generated/server'
+import { mutation, query } from './_generated/server'
 import { getAuthUserId } from '@convex-dev/auth/server'
+import { Id } from './_generated/dataModel'
 
 export const createUnitAndAssign = mutation({
   args: {
@@ -69,5 +70,56 @@ export const createUnitAndAssign = mutation({
     })
 
     return unitId
+  }
+})
+
+export const getCondoUnits = query({
+  args: { condoId: v.id('condos') },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx)
+
+    if (!userId) {
+      throw new ConvexError('Usuario no autenticado')
+    }
+
+    const condo = await ctx.db.get(args.condoId)
+    if (!condo) {
+      throw new ConvexError('Condominio no encontrado')
+    }
+
+    if (!condo.admins.includes(userId)) {
+      throw new ConvexError('No tienes permiso para ver las unidades de este condominio')
+    }
+
+    const units = await ctx.db
+      .query('condoUnits')
+      .filter((q) => q.eq(q.field('condoId'), args.condoId))
+      .collect()
+
+    const unitsWithUsers = await Promise.all(
+      units.map(async (unit) => {
+        const owners = await Promise.all(
+          (unit.owners || []).map(async (ownerId: Id<'users'>) => {
+            const owner = await ctx.db.get(ownerId)
+            return owner ? { id: ownerId, name: owner.name, phone: owner.phone } : null
+          })
+        )
+
+        const tenants = await Promise.all(
+          (unit.tenants || []).map(async (tenantId: Id<'users'>) => {
+            const tenant = await ctx.db.get(tenantId)
+            return tenant ? { id: tenantId, name: tenant.name, phone: tenant.phone } : null
+          })
+        )
+
+        return {
+          ...unit,
+          owners: owners.filter((owner) => owner !== null),
+          tenants: tenants.filter((tenant) => tenant !== null)
+        }
+      })
+    )
+
+    return unitsWithUsers
   }
 })

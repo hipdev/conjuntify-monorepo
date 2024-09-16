@@ -48,7 +48,7 @@ export default function AsideNav({ condoId }: { condoId: Id<'condos'> }) {
       <div className={cn('w-full border-t border-white/30 px-5 pt-6', !isCollapsed && 'hidden')} />
 
       <CustomLink
-        href='/'
+        href={`/dashboard/${condoId}/properties`}
         IconComponent={<Building2 size={20} className={iconClassName} />}
         label='Propiedades'
         isCollapsed={isCollapsed}
