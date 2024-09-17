@@ -13,6 +13,7 @@ export default function HomeScreen() {
 
   const [name, setName] = useState('')
   const [lastName, setLastName] = useState('')
+  const [showRequestUnit, setShowRequestUnit] = useState(false)
 
   const handleNameSubmit = async () => {
     if (name && lastName) {
@@ -32,8 +33,15 @@ export default function HomeScreen() {
 
   console.log(pendingRequests, 'pendingRequests')
 
-  if (pendingRequests && pendingRequests.length > 0) {
-    return <PendingRequestsScreen requests={pendingRequests} onNewRequest={() => {}} />
+  if (!showRequestUnit && pendingRequests && pendingRequests.length > 0) {
+    return (
+      <PendingRequestsScreen
+        requests={pendingRequests}
+        onNewRequest={() => {
+          setShowRequestUnit(true)
+        }}
+      />
+    )
   }
 
   return (
@@ -65,7 +73,10 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
           ) : (
-            <RequestUnit />
+            <RequestUnit
+              showRequestUnit={showRequestUnit}
+              setShowRequestUnit={setShowRequestUnit}
+            />
           )}
         </View>
       </ScrollView>

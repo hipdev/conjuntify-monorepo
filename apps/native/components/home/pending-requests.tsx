@@ -2,6 +2,7 @@ import React from 'react'
 import { SafeAreaView, View, Text, TouchableOpacity, ScrollView } from 'react-native'
 
 import { Doc } from '@packages/backend/convex/_generated/dataModel'
+import clsx from 'clsx'
 
 const statusValues = {
   pending: 'Pendiente',
@@ -22,60 +23,28 @@ const PendingRequestsScreen = ({
         <View className='flex flex-1 flex-col justify-between px-4 py-6'>
           <Text className='mb-6 pl-4 text-2xl font-bold'>Solicitudes Pendientes</Text>
 
-          <View className='mt-5'>
+          <View className='mt-5 bg-black'>
             {requests.map((request) => (
               <View key={request._id} className='mb-8 rounded-xl bg-white p-6 shadow-md'>
                 <Text className='mb-4 text-xl font-semibold text-gray-700'>
                   Información de la Solicitud
                 </Text>
-                <View className='space-y-2'>
+                <View className='flex justify-between'>
                   <InfoItem label='Nombre' value={request.name} />
                   <InfoItem label='Unidad' value={request.unitNumber} />
                   <InfoItem label='Edificio' value={request.buildingNumber} />
                   <InfoItem label='Teléfono' value={request.phone} />
-                  <InfoItem label='Estado' value={statusValues[request?.status || 'pending']} />
-                </View>
-              </View>
-            ))}
-            {requests.map((request) => (
-              <View key={request._id} className='mb-8 rounded-xl bg-white p-6 shadow-md'>
-                <Text className='mb-4 text-xl font-semibold text-gray-700'>
-                  Información de la Solicitud
-                </Text>
-                <View className='space-y-2'>
-                  <InfoItem label='Nombre' value={request.name} />
-                  <InfoItem label='Unidad' value={request.unitNumber} />
-                  <InfoItem label='Edificio' value={request.buildingNumber} />
-                  <InfoItem label='Teléfono' value={request.phone} />
-                  <InfoItem label='Estado' value={statusValues[request?.status || 'pending']} />
-                </View>
-              </View>
-            ))}
-            {requests.map((request) => (
-              <View key={request._id} className='mb-8 rounded-xl bg-white p-6 shadow-md'>
-                <Text className='mb-4 text-xl font-semibold text-gray-700'>
-                  Información de la Solicitud
-                </Text>
-                <View className='space-y-2'>
-                  <InfoItem label='Nombre' value={request.name} />
-                  <InfoItem label='Unidad' value={request.unitNumber} />
-                  <InfoItem label='Edificio' value={request.buildingNumber} />
-                  <InfoItem label='Teléfono' value={request.phone} />
-                  <InfoItem label='Estado' value={statusValues[request?.status || 'pending']} />
-                </View>
-              </View>
-            ))}
-            {requests.map((request) => (
-              <View key={request._id} className='mb-8 rounded-xl bg-white p-6 shadow-md'>
-                <Text className='mb-4 text-xl font-semibold text-gray-700'>
-                  Información de la Solicitud
-                </Text>
-                <View className='space-y-2'>
-                  <InfoItem label='Nombre' value={request.name} />
-                  <InfoItem label='Unidad' value={request.unitNumber} />
-                  <InfoItem label='Edificio' value={request.buildingNumber} />
-                  <InfoItem label='Teléfono' value={request.phone} />
-                  <InfoItem label='Estado' value={statusValues[request?.status || 'pending']} />
+                  <InfoItem
+                    label='Estado'
+                    className={clsx(
+                      request?.status === 'pending'
+                        ? 'text-yellow-500'
+                        : request?.status === 'approved'
+                          ? 'text-green-500'
+                          : 'text-red-500'
+                    )}
+                    value={statusValues[request?.status || 'pending']}
+                  />
                 </View>
               </View>
             ))}
@@ -91,7 +60,7 @@ const PendingRequestsScreen = ({
 
           <TouchableOpacity
             onPress={onNewRequest}
-            className='rounded-full rounded-md bg-indigo-500 px-6 py-4 shadow-lg'
+            className='mt-10 rounded-md bg-indigo-500 px-6 py-4 shadow-lg'
           >
             <Text className='text-center text-lg font-semibold text-white'>
               Crear una nueva solicitud
@@ -103,10 +72,18 @@ const PendingRequestsScreen = ({
   )
 }
 
-const InfoItem = ({ label, value }: { label: string; value: string }) => (
-  <View className='flex-row justify-between'>
+const InfoItem = ({
+  label,
+  value,
+  className
+}: {
+  label: string
+  value: string
+  className?: string
+}) => (
+  <View style={{ flexDirection: 'row' }} className='mt-4 flex-row items-center justify-between'>
     <Text className='font-medium text-gray-600'>{label}:</Text>
-    <Text className='text-gray-800'>{value}</Text>
+    <Text className={clsx('font-semibold', className)}>{value}</Text>
   </View>
 )
 

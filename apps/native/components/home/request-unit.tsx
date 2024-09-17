@@ -19,7 +19,13 @@ type FormData = {
   propertyRegistration: string
 }
 
-export const RequestUnit = () => {
+export const RequestUnit = ({
+  showRequestUnit,
+  setShowRequestUnit
+}: {
+  showRequestUnit: boolean
+  setShowRequestUnit: (showRequestUnit: boolean) => void
+}) => {
   const user = useQuery(api.users.currentUser)
   const createCondoApplication = useMutation(api.users.createCondoApplication)
 
@@ -156,7 +162,7 @@ export const RequestUnit = () => {
       <Controller
         control={control}
         render={({ field: { value, onChange } }) => (
-          <View className='mb-4 flex-row items-center'>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 20 }}>
             <Switch
               value={value}
               onValueChange={onChange}
@@ -172,7 +178,14 @@ export const RequestUnit = () => {
       <Controller
         control={control}
         render={({ field: { value, onChange } }) => (
-          <View className='mb-4 flex-row items-center'>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 10,
+              marginBottom: 20
+            }}
+          >
             <Switch
               value={value}
               onValueChange={onChange}
@@ -225,6 +238,19 @@ export const RequestUnit = () => {
       >
         <Text className='text-center font-bold text-white'>Guardar</Text>
       </TouchableOpacity>
+
+      {showRequestUnit && (
+        <TouchableOpacity
+          style={{
+            borderWidth: 1,
+            borderColor: indigoColor
+          }}
+          className='mt-10 rounded border border-indigo-500 px-4 py-4'
+          onPress={() => setShowRequestUnit(false)}
+        >
+          <Text className='text-center font-bold text-indigo-500'>Ver mis solicitudes</Text>
+        </TouchableOpacity>
+      )}
     </View>
   )
 }
