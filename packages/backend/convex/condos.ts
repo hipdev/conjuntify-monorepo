@@ -401,7 +401,8 @@ export const createCommonArea = mutation({
       description: args.description,
       type: args.type,
       maxCapacity: args.maxCapacity,
-      isAvailable: true
+      isAvailable: true,
+      remainingCapacity: args.maxCapacity
     })
 
     return newCommonArea

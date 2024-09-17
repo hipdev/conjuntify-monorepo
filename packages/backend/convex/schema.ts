@@ -107,6 +107,7 @@ const schema = defineSchema({
       v.literal('socialRoom')
     ),
     maxCapacity: v.number(),
+    remainingCapacity: v.optional(v.number()),
     isAvailable: v.boolean()
   })
     .index('by_condo', ['condoId'])
