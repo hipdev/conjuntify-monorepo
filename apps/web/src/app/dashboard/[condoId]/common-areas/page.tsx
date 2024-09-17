@@ -39,22 +39,8 @@ export default function CommonAreasPage() {
   const pathname = usePathname()
 
   const commonAreas = useQuery(api.condos.getCommonAreas, { condoId })
-  const updateCommonAreaAvailability = useMutation(api.condos.updateCommonAreaAvailability)
 
   const commonAreaId = searchParams.get('editCommonAreaId') as Id<'commonAreas'> | null
-
-  useEffect(() => {
-    if (commonAreas) {
-      commonAreas.forEach((area) => {
-        if (area.isAvailable !== area.availableCapacity > 0) {
-          updateCommonAreaAvailability({
-            commonAreaId: area._id,
-            isAvailable: area.availableCapacity > 0
-          })
-        }
-      })
-    }
-  }, [commonAreas, updateCommonAreaAvailability])
 
   const filteredAreas = commonAreas?.filter((area) =>
     Object.values(area).some((value) =>
@@ -105,7 +91,6 @@ export default function CommonAreasPage() {
                 <TableHead>Nombre</TableHead>
                 <TableHead>Tipo</TableHead>
                 <TableHead className='text-center'>Capacidad Máxima</TableHead>
-                <TableHead className='text-center'> Total Reservas</TableHead>
                 <TableHead className='text-center'>Cupos Disponibles</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead>Acciones</TableHead>
@@ -121,9 +106,12 @@ export default function CommonAreasPage() {
                     <TableCell className='font-medium'>{area.name}</TableCell>
                     <TableCell>{areaTypes[area.type as keyof typeof areaTypes]}</TableCell>
                     <TableCell className='text-center'>{area.maxCapacity}</TableCell>
-                    <TableCell className='text-center'>{area.totalReservations}</TableCell>
                     <TableCell className='text-center'>{area.availableCapacity}</TableCell>
-                    <TableCell>{area.isAvailable ? 'Disponible' : 'No disponible'}</TableCell>
+                    <TableCell
+                      className={`font-medium ${area.isAvailable ? 'text-green-600' : 'text-red-700'}`}
+                    >
+                      {area.isAvailable ? 'Disponible' : 'No disponible'}
+                    </TableCell>
                     <TableCell className='flex items-center gap-4'>
                       <button
                         type='button'

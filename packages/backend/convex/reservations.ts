@@ -28,12 +28,40 @@ export const getUserReservations = query({
   }
 })
 
+export const getCondoReservations = query({
+  args: { condoId: v.id('condos') },
+  handler: async (ctx, args) => {
+    const reservations = await ctx.db
+      .query('reservations')
+      .withIndex('by_condo', (q) => q.eq('condoId', args.condoId))
+      .collect()
+
+    const reservationsWithDetails = await Promise.all(
+      reservations.map(async (reservation) => {
+        const commonArea = await ctx.db.get(reservation.commonAreaId)
+        const condoUnit = await ctx.db.get(reservation.condoUnitId)
+        const user = await ctx.db.get(reservation.userId)
+
+        return {
+          ...reservation,
+          commonArea,
+          condoUnit,
+          userName: user?.name || 'Usuario desconocido'
+        }
+      })
+    )
+
+    return reservationsWithDetails
+  }
+})
+
 export const createReservation = mutation({
   args: {
     commonAreaId: v.id('commonAreas'),
     condoUnitId: v.id('condoUnits'),
     numberOfPeople: v.number(),
-    reservationTime: v.number()
+    reservationTime: v.number(),
+    condoId: v.id('condos')
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx)
@@ -58,6 +86,7 @@ export const createReservation = mutation({
     // Crear la reserva
     const reservationId = await ctx.db.insert('reservations', {
       commonAreaId: args.commonAreaId,
+      condoId: args.condoId,
       condoUnitId: args.condoUnitId,
       numberOfPeople: args.numberOfPeople,
       reservationTime: args.reservationTime,
@@ -88,7 +117,15 @@ export const deleteReservation = mutation({
       throw new ConvexError('Reserva no encontrada')
     }
 
-    if (reservation.userId !== userId) {
+    // Verificar si el usuario es el propietario de la reserva o un administrador del condominio
+    const isOwner = reservation.userId === userId
+    const isAdmin = await ctx.db
+      .query('condoAdmins')
+      .withIndex('by_user', (q) => q.eq('userId', userId))
+      .filter((q) => q.eq(q.field('condoId'), reservation.condoId))
+      .unique()
+
+    if (!isOwner && !isAdmin) {
       throw new ConvexError('No tienes permiso para eliminar esta reserva')
     }
 

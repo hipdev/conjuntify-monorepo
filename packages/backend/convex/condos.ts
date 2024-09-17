@@ -308,17 +308,6 @@ export const getUsersByCondoId = query({
 
 // COMMON AREAS
 
-export const updateCommonAreaAvailability = mutation({
-  args: {
-    commonAreaId: v.id('commonAreas'),
-    isAvailable: v.boolean()
-  },
-  handler: async (ctx, args) => {
-    const { commonAreaId, isAvailable } = args
-    await ctx.db.patch(commonAreaId, { isAvailable })
-  }
-})
-
 // Get common areas by condo id
 export const getCommonAreas = query({
   args: { condoId: v.id('condos') },

@@ -5,7 +5,7 @@ import { api } from '@packages/backend/convex/_generated/api'
 import Toast from 'react-native-toast-message'
 import { Id } from '@packages/backend/convex/_generated/dataModel'
 
-const statusValues = {
+const reservationStatus = {
   pending: 'Pendiente',
   confirmed: 'Confirmada',
   inUse: 'En uso',
@@ -62,7 +62,7 @@ export default function ReservationsScreen() {
                 Fecha: {new Date(reservation.reservationTime).toLocaleString()}
               </Text>
               <Text className='text-gray-600'>Personas: {reservation.numberOfPeople}</Text>
-              <Text className='text-gray-600'>Estado: {statusValues[reservation.status]}</Text>
+              <Text className='text-gray-600'>Estado: {reservationStatus[reservation.status]}</Text>
               <TouchableOpacity
                 className='mt-5 rounded-md bg-red-700 p-2'
                 onPress={() => handleDeleteReservation(reservation._id)}

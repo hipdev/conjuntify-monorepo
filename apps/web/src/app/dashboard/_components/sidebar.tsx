@@ -57,7 +57,7 @@ export default function SideBar() {
       >
         {condos?.[0]?._id && <AsideNav condoId={condos?.[0]?._id} />}
 
-        <SidebarFooter />
+        <SidebarFooter condoId={condos?.[0]?._id ?? ''} />
       </div>
     </aside>
   )

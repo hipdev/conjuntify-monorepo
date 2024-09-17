@@ -117,6 +117,7 @@ const schema = defineSchema({
   reservations: defineTable({
     commonAreaId: v.id('commonAreas'),
     condoUnitId: v.id('condoUnits'),
+    condoId: v.id('condos'),
     notificationSent: v.optional(v.boolean()),
     numberOfPeople: v.number(),
     reservationTime: v.number(),
@@ -132,7 +133,8 @@ const schema = defineSchema({
   })
     .index('by_user_and_status', ['userId', 'status'])
     .index('by_condoUnit_and_status', ['condoUnitId', 'status'])
-    .index('by_commonArea_and_status', ['commonAreaId', 'status']),
+    .index('by_commonArea_and_status', ['commonAreaId', 'status'])
+    .index('by_condo', ['condoId']),
 
   // Tabla para almacenar las notificaciones de los usuarios
   notifications: defineTable({

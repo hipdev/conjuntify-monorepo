@@ -36,7 +36,7 @@ export default function TabAreasLayout() {
         options={{
           title: 'Áreas comunes',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon name={focused ? 'business' : 'business-outline'} color={color} />
           )
         }}
       />
@@ -45,6 +45,16 @@ export default function TabAreasLayout() {
         name='reservations'
         options={{
           title: 'Reservas',
+
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'book' : 'book-outline'} color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name='settings'
+        options={{
+          title: 'Configuración',
 
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'cog' : 'cog-outline'} color={color} />

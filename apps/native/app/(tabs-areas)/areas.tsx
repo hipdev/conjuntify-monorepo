@@ -106,6 +106,7 @@ export default function AreasScreen() {
 
     try {
       await createReservation({
+        condoId: assignedUnit.condo._id,
         commonAreaId: selectedArea._id,
         condoUnitId: assignedUnit.unit._id,
         numberOfPeople: parseInt(numberOfPeople),

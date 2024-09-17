@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import DropdownUser from './dropdown-user';
-import SidebarHotkeys from './sidebar-hotkeys';
+import DropdownUser from './dropdown-user'
+import SidebarHotkeys from './sidebar-hotkeys'
 
-export default function SidebarFooter() {
+export default function SidebarFooter({ condoId }: { condoId: string }) {
   return (
     <div>
-      <SidebarHotkeys />
+      {condoId && <SidebarHotkeys />}
 
       <DropdownUser />
     </div>
-  );
+  )
 }

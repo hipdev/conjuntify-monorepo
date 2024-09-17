@@ -18,7 +18,7 @@ export default function AsideNav({ condoId }: { condoId: Id<'condos'> }) {
   return (
     <nav>
       <CustomLink
-        href='/'
+        href={`/dashboard/${condoId}/reservations`}
         IconComponent={<Home className={iconClassName} />}
         label='Reservas'
         isCollapsed={isCollapsed}

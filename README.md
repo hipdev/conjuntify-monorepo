@@ -1,35 +1,34 @@
-# Fullstack monorepo template feat. Expo, Turbo, Next.js, Convex, Clerk
+# Fullstack monorepo template feat. Expo, Turbo, Next.js, Convex
 
-This is a modern TypeScript monorepo template with AI web and native apps
-featuring:
+This is a modern TypeScript monorepo template with web and native apps featuring:
 
 - Turborepo: Monorepo management
-- Next.js 14: Web app & marketing page
+- Next.js 14: Web app
 - React Native [Expo](https://expo.dev/): Mobile/native app
-- [Convex](https://convex.dev): Backend, database, server functions
-- [Clerk](https://clerk.dev): User authentication
-- OpenAI: Text summarization (optional)
+- [Convex](https://convex.dev): Backend, database, server functions, and authentication
+- TailwindCSS: Styling for web app
+- NativeWind: Styling for mobile app
 
-The example app is a note taking app that can summarize notes using AI. Features
-include:
+This project is a simple platform for booking common areas in a condominium. \
+It was inspired by the lack of such a system in the condominium where I currently live. \
+I decided to include React Native to test how far I could go in creating a native app with Convex for a hackathon project.
 
-- Marketing page
+Features include:
+
 - Dashboard page (web & native)
-- Note taking page (web & native)
+- Booking page (web & native)
 - Backend API that serves web & native with the same API
 - Relational database
 - End to end type safety (schema definition to frontend API clients)
-- User authentication
-- Asynchronous call to an OpenAI
-- Everything is realtime by default
+- User authentication using Convex's native authentication
 
 ## Using this example
 
 ### 1. Install dependencies
 
-If you don't have `yarn` installed, run `npm install --global yarn`.
+If you don't have `pnpm` installed, run `npm install --global pnpm`.
 
-Run `yarn`.
+Run `pnpm install`.
 
 ### 2. Configure Convex
 
@@ -61,6 +60,8 @@ environment variables to get AI summaries.
 The `setup` command should now finish successfully.
 
 ### 3. Configure both apps
+
+Please follow the `.env.local.example` files to configure the apps easily.
 
 In each app directory (`apps/web`, `apps/native`) create a `.env.local` file
 using the `.example.env` as a template and fill out your Convex and Clerk
