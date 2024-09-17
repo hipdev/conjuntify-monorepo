@@ -222,6 +222,31 @@ export const getCondoTemporalUsers = query({
   }
 })
 
+// Delete temporal unit user
+export const deleteTemporalUnitUser = mutation({
+  args: { temporalUnitId: v.id('condoTemporalUnitUsers') },
+  handler: async (ctx, args) => {
+    const authUserId = await getAuthUserId(ctx)
+
+    if (!authUserId) {
+      throw new ConvexError('Usuario no autenticado')
+    }
+
+    const temporalUnit = await ctx.db.get(args.temporalUnitId)
+    if (!temporalUnit) {
+      throw new ConvexError('Solicitud temporal no encontrada')
+    }
+
+    const condo = await ctx.db.get(temporalUnit.condoId)
+    if (!condo || !condo.admins.includes(authUserId)) {
+      throw new ConvexError('No tienes permiso para eliminar esta solicitud')
+    }
+
+    await ctx.db.delete(args.temporalUnitId)
+    return 'success'
+  }
+})
+
 // getUsersByCondoId
 export const getUsersByCondoId = query({
   args: { condoId: v.id('condos') },

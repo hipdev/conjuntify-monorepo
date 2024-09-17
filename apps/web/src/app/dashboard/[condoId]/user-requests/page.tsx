@@ -1,6 +1,10 @@
 'use client'
 
+import Link from 'next/link'
+import { toast } from 'sonner'
 import { useState } from 'react'
+import { useMutation, useQuery } from 'convex/react'
+
 import { CheckCircle, Eye, HousePlus, Trash2, XCircle } from 'lucide-react'
 
 import {
@@ -12,13 +16,22 @@ import {
   TableRow
 } from '@/components/ui/table'
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+
 import { Input } from '@/components/ui/input'
-import { useQuery } from 'convex/react'
+
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { api } from '@packages/backend/convex/_generated/api'
 import { Id } from '@packages/backend/convex/_generated/dataModel'
 import { AssignUnit } from './_components/assign-unit'
-import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 const statusValues = {
@@ -35,6 +48,10 @@ export default function UserRequestsPage() {
   const condoId = params.condoId as Id<'condos'>
 
   const userRequests = condoId ? useQuery(api.condos.getCondoTemporalUsers, { condoId }) : null
+  const deleteTemporalUnitUser = useMutation(api.condos.deleteTemporalUnitUser)
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [userToDelete, setUserToDelete] = useState<Id<'condoTemporalUnitUsers'> | null>(null)
 
   const temporalUnitId = searchParams.get('temporalUnitId') as Id<'condoTemporalUnitUsers'> | null
 
@@ -56,6 +73,24 @@ export default function UserRequestsPage() {
     const params = new URLSearchParams(searchParams)
     params.delete('temporalUnitId')
     router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
+  const handleDeleteRequest = async () => {
+    if (!userToDelete) return
+    try {
+      await deleteTemporalUnitUser({ temporalUnitId: userToDelete })
+      toast.success('Solicitud eliminada correctamente')
+      setDeleteDialogOpen(false)
+      setUserToDelete(null)
+    } catch (error) {
+      console.error('Error deleting temporal unit user:', error)
+      toast.error('Error al eliminar la solicitud')
+    }
+  }
+
+  const openDeleteDialog = (userId: Id<'condoTemporalUnitUsers'>) => {
+    setUserToDelete(userId)
+    setDeleteDialogOpen(true)
   }
 
   return (
@@ -143,14 +178,15 @@ export default function UserRequestsPage() {
                           <button onClick={() => openDrawer(user._id)} type='button'>
                             <HousePlus className='text-green-700' />
                           </button>
-                          <button type='button'>
+                          <button type='button' onClick={() => openDeleteDialog(user._id)}>
                             <Trash2 className='text-red-800' />
                           </button>
                         </>
                       ) : (
                         <>
+                          {/* TODO: Ver y editar user */}
                           <Link
-                            href={`/dashboard/${condoId}/user-requests/${user._id}`}
+                            href={`#`}
                             className='relative top-px flex items-center gap-2 hover:text-indigo-500'
                           >
                             Ver <Eye className='h-4 w-4' />
@@ -171,6 +207,25 @@ export default function UserRequestsPage() {
           </Table>
         </div>
       </div>
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar eliminación</DialogTitle>
+            <DialogDescription className='text-base text-neutral-400'>
+              ¿Estás seguro de que deseas eliminar esta solicitud? Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className='mt-10'>
+            <Button variant='outline' onClick={() => setDeleteDialogOpen(false)}>
+              Cancelar
+            </Button>
+            <Button variant='destructive' onClick={handleDeleteRequest}>
+              Eliminar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
