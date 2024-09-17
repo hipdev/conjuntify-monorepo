@@ -21,7 +21,6 @@ import { ConvexError } from 'convex/values'
 export default function AreasScreen() {
   const user = useQuery(api.users.currentUser)
   const assignedUnit = useQuery(api.users.getUserAssignedUnit)
-  const [modalVisible, setModalVisible] = useState(false)
   const [selectedArea, setSelectedArea] = useState<any>(null)
   const [numberOfPeople, setNumberOfPeople] = useState('')
   const [reservationDate, setReservationDate] = useState(new Date())
@@ -32,10 +31,6 @@ export default function AreasScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null)
 
   const snapPoints = useMemo(() => ['25%', '50%', '65%'], [])
-
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index)
-  }, [])
 
   const handleClosePress = useCallback(() => {
     bottomSheetRef.current?.close()
@@ -90,7 +85,16 @@ export default function AreasScreen() {
     }
 
     const now = new Date()
-    const maxDate = new Date(now.getTime() + 24 * 60 * 60 * 1000) // Fecha actual + 1 día
+    const minDate = new Date(now.getTime() + 60 * 60 * 1000) // Mínimo una hora en el futuro
+    const maxDate = new Date(now.getTime() + 24 * 60 * 60 * 1000) // Máximo un día en el futuro
+
+    if (reservationDate < minDate) {
+      Toast.show({
+        type: 'error',
+        text1: 'La reserva debe ser al menos una hora en el futuro'
+      })
+      return
+    }
 
     if (reservationDate > maxDate) {
       Toast.show({
@@ -116,7 +120,6 @@ export default function AreasScreen() {
       setNumberOfPeople('')
       setReservationDate(new Date())
     } catch (error) {
-      console.log(error)
       const errorMessage = error instanceof ConvexError ? error.data : 'Ocurrió un error'
 
       Toast.show({
@@ -167,7 +170,6 @@ export default function AreasScreen() {
           ref={bottomSheetRef}
           index={-1}
           snapPoints={snapPoints}
-          onChange={handleSheetChanges}
           enablePanDownToClose={true}
           backdropComponent={renderBackdrop}
         >
@@ -199,7 +201,7 @@ export default function AreasScreen() {
                   display='default'
                   onChange={onDateChange}
                   className='mb-5'
-                  maximumDate={new Date(new Date().getTime() + 24 * 60 * 60 * 1000)}
+                  maximumDate={new Date(Date.now() + 24 * 60 * 60 * 1000)}
                 />
               )}
               <TouchableOpacity

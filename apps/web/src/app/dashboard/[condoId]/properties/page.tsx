@@ -68,8 +68,6 @@ export default function PropertiesPage() {
 
   const properties = condoId ? useQuery(api.units.getCondoUnits, { condoId }) : []
 
-  console.log(properties, 'properties')
-
   const filteredProperties = properties?.filter((property) =>
     Object.values(property).some((value) =>
       value?.toString().toLowerCase().includes(searchTerm.toLowerCase())

@@ -340,29 +340,11 @@ export const getCommonAreas = query({
       .filter((q) => q.eq(q.field('condoId'), args.condoId))
       .collect()
 
-    const areasWithReservations = await Promise.all(
-      commonAreas.map(async (area) => {
-        const reservations = await ctx.db
-          .query('reservations')
-          .filter((q) => q.eq(q.field('commonAreaId'), area._id))
-          .filter((q) => q.neq(q.field('status'), 'cancelled'))
-          .filter((q) => q.neq(q.field('status'), 'completed'))
-          .collect()
-
-        const totalReservations = reservations.length
-        const availableCapacity = Math.max(0, area.maxCapacity - totalReservations)
-        const isAvailable = availableCapacity > 0
-
-        return {
-          ...area,
-          totalReservations,
-          availableCapacity,
-          isAvailable
-        }
-      })
-    )
-
-    return areasWithReservations
+    return commonAreas.map((area) => ({
+      ...area,
+      availableCapacity: area.remainingCapacity,
+      isAvailable: area.isAvailable && (area?.remainingCapacity || 0) > 0
+    }))
   }
 })
 

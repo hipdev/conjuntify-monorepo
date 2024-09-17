@@ -38,8 +38,6 @@ export default function HomeScreen() {
     return <AssignedUnit assignedUnit={assignedUnit} />
   }
 
-  console.log(pendingRequests, 'pendingRequests')
-
   if (!assignedUnit && !showRequestUnit && pendingRequests && pendingRequests.length > 0) {
     return (
       <PendingRequestsScreen

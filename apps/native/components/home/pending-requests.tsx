@@ -4,7 +4,7 @@ import { SafeAreaView, View, Text, TouchableOpacity, ScrollView } from 'react-na
 import { Doc } from '@packages/backend/convex/_generated/dataModel'
 import clsx from 'clsx'
 
-const statusValues = {
+export const statusValues = {
   pending: 'Pendiente',
   approved: 'Aprobado',
   rejected: 'Rechazado'
