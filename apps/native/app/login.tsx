@@ -30,7 +30,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     try {
       // Intenta iniciar sesión con Convex Auth
-      await signIn('password', { email, password })
+      await signIn('password', { email, password, flow: 'signIn' })
 
       // Si el inicio de sesión es exitoso, redirige al usuario
       router.replace('/(tabs)/')

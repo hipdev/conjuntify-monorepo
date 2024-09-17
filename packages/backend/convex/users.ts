@@ -133,3 +133,33 @@ export const getPendingRequests = query({
     return pendingRequests
   }
 })
+
+export const getUserAssignedUnit = query({
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx)
+    if (!userId) return null
+
+    // Buscar la asignación de unidad del usuario
+    const unitAssignment = await ctx.db
+      .query('condoUnitUsers')
+      .filter((q) => q.eq(q.field('userId'), userId))
+      .first()
+
+    if (!unitAssignment) return null
+
+    // Obtener la información de la unidad
+    const unit = await ctx.db.get(unitAssignment.condoUnitId)
+    if (!unit) return null
+
+    // Obtener la información del condominio
+    const condo = await ctx.db.get(unit.condoId)
+    if (!condo) return null
+
+    // Devolver la información combinada
+    return {
+      unitAssignment,
+      unit,
+      condo
+    }
+  }
+})

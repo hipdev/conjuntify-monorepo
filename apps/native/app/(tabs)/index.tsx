@@ -5,9 +5,12 @@ import { api } from '@packages/backend/convex/_generated/api'
 import Toast from 'react-native-toast-message'
 import { RequestUnit } from '@/components/home/request-unit'
 import PendingRequestsScreen from '@/components/home/pending-requests'
+import AssignedUnit from '@/components/home/assigned-unit'
 
 export default function HomeScreen() {
   const user = useQuery(api.users.currentUser)
+  const assignedUnit = useQuery(api.users.getUserAssignedUnit)
+
   const pendingRequests = useQuery(api.users.getPendingRequests)
   const updateUser = useMutation(api.users.updateUserName)
 
@@ -31,9 +34,13 @@ export default function HomeScreen() {
     return <Text>Loading...</Text>
   }
 
+  if (assignedUnit) {
+    return <AssignedUnit assignedUnit={assignedUnit} />
+  }
+
   console.log(pendingRequests, 'pendingRequests')
 
-  if (!showRequestUnit && pendingRequests && pendingRequests.length > 0) {
+  if (!assignedUnit && !showRequestUnit && pendingRequests && pendingRequests.length > 0) {
     return (
       <PendingRequestsScreen
         requests={pendingRequests}
