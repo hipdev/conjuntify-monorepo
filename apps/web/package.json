@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
-    "devturbo": "cross-env NODE_OPTIONS=--no-deprecation next dev --turbo",
-    "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
-    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
+    "dev": "next dev",
+    "devturbo": "next dev --turbo",
+    "devsafe": "rm -rf .next && next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
     "standalone-script": "node ./src/scripts/standalone-script.js"
   },
   "dependencies": {
