@@ -8,8 +8,7 @@
     "devsafe": "rm -rf .next && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "standalone-script": "node ./src/scripts/standalone-script.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@auth/core": "^0.34.2",
