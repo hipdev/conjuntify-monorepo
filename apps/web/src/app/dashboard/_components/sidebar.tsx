@@ -27,13 +27,13 @@ export default function SideBar() {
           <button
             type='button'
             onClick={() => setIsCollapsed()}
-            className='absolute -right-[17px] top-10 rounded-full border border-white/15 bg-black p-1 transition-colors hover:border-white/30 hover:bg-black'
+            className='absolute -right-[17px] top-12 rounded-full border border-white/15 bg-black p-1 transition-colors hover:border-white/30 hover:bg-black'
           >
             <ChevronRight className='relative left-px text-neutral-500' size={22} />
           </button>
           <div className='mb-6 border-b border-b-white/10 p-2 py-4'>
             {/* TODO: Add logotype */}
-            <span className='relative left-1 text-2xl font-bold'>C</span>
+            <span className='relative left-1 text-2xl font-bold text-indigo-500'>C</span>
           </div>
         </>
       ) : (

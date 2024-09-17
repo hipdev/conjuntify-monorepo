@@ -6,7 +6,7 @@ import { indigoColor } from '@/constants/Colors'
 import { ActivityIndicator, Text, View } from 'react-native'
 import { TabBarIcon } from '@/components/navigation/TabBarIcon'
 
-export default function TabLayout() {
+export default function TabAreasLayout() {
   const { isLoading, isAuthenticated } = useConvexAuth()
 
   if (isLoading) {
@@ -32,9 +32,9 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name='index'
+        name='areas'
         options={{
-          title: 'Inicio',
+          title: 'Áreas comunes',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           )
@@ -42,9 +42,9 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name='settings'
+        name='reservations'
         options={{
-          title: 'Configuración',
+          title: 'Reservas',
 
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'cog' : 'cog-outline'} color={color} />

@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import { cn } from '@/lib/utils';
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 type Props = {
-  href?: string;
-  className?: string;
-};
+  href?: string
+  className?: string
+}
 
 /**
  * The type `Props` in TypeScript React consists of optional properties `href` and `className`.
@@ -18,7 +18,7 @@ type Props = {
 export default function Logo({ href = '/', className }: Props) {
   return (
     <Link href={href} className={cn('block py-1', className)}>
-      <span className='text-xl font-medium'>Conjuntify</span>
+      <span className='text-xl font-medium text-indigo-500'>Conjuntify</span>
     </Link>
-  );
+  )
 }

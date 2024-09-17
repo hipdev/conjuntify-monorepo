@@ -330,7 +330,8 @@ export const getCommonAreas = query({
     }
 
     const condo = await ctx.db.get(args.condoId)
-    if (!condo || !condo.admins.includes(authUserId)) {
+
+    if (!condo) {
       throw new ConvexError('No tienes permiso para ver las áreas comunes de este condominio')
     }
 

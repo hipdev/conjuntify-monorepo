@@ -1,6 +1,7 @@
 import { Doc } from '@packages/backend/convex/_generated/dataModel'
+import { Link } from 'expo-router'
 import React from 'react'
-import { View, Text, ScrollView, SafeAreaView } from 'react-native'
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native'
 
 type AssignedUnitProps = {
   assignedUnit: {
@@ -84,6 +85,14 @@ export default function AssignedUnit({ assignedUnit }: AssignedUnitProps) {
               </Text>
             </View>
           </View>
+
+          <Link href='/(tabs-areas)/areas' asChild>
+            <TouchableOpacity className='mt-10 rounded-md bg-indigo-500 p-4'>
+              <Text className='text-center text-lg font-semibold text-white'>
+                Reservar áreas comunes
+              </Text>
+            </TouchableOpacity>
+          </Link>
         </View>
       </ScrollView>
     </SafeAreaView>
