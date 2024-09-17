@@ -2,6 +2,17 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "ui": "tui",
+  "globalEnv": ["CONVEX_DEPLOYMENT", "NEXT_PUBLIC_CONVEX_URL"],
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "web#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    }
+  },
   "tasks": {
     "build": {
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],

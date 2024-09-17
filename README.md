@@ -44,19 +44,6 @@ The script will log you into Convex if you aren't already and prompt you to
 create a project (free). It will then wait to deploy your code until you set the
 environment variables in the dashboard.
 
-Configure Clerk with [this guide](https://docs.convex.dev/auth/clerk). Then add
-the `CLERK_ISSUER_URL` found in the "convex" template
-[here](https://dashboard.clerk.com/last-active?path=jwt-templates), to your
-Convex environment variables
-[here](https://dashboard.convex.dev/deployment/settings/environment-variables&var=CLERK_ISSUER_URL).
-
-Make sure to enable **Google and Apple** as possible Social Connection
-providers, as these are used by the React Native login implementation.
-
-After that, optionally add the `OPENAI_API_KEY` env var from
-[OpenAI](https://platform.openai.com/account/api-keys) to your Convex
-environment variables to get AI summaries.
-
 The `setup` command should now finish successfully.
 
 ### 3. Configure both apps
@@ -64,13 +51,11 @@ The `setup` command should now finish successfully.
 Please follow the `.env.local.example` files to configure the apps easily.
 
 In each app directory (`apps/web`, `apps/native`) create a `.env.local` file
-using the `.example.env` as a template and fill out your Convex and Clerk
+using the `.example.env` as a template and fill out your Convex
 environment variables.
 
 - Use the `CONVEX_URL` from `packages/backend/.env.local` for
   `{NEXT,EXPO}_PUBLIC_CONVEX_URL`.
-- The Clerk publishable & secret keys can be found
-  [here](https://dashboard.clerk.com/last-active?path=api-keys).
 
 ### 4. Run both apps
 
@@ -91,9 +76,9 @@ This monorepo template includes the following packages/apps:
 
 ### Apps and Packages
 
-- `web`: a [Next.js 14](https://nextjs.org/) app with TailwindCSS and Clerk
+- `web`: a [Next.js 14](https://nextjs.org/) app with TailwindCSS
 - `native`: a [React Native](https://reactnative.dev/) app built with
-  [expo](https://docs.expo.dev/)
+  [expo](https://docs.expo.dev/) and NativeWind
 - `packages/backend`: a [Convex](https://www.convex.dev/) folder with the
   database schema and shared functions
 
