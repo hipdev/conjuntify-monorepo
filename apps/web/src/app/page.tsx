@@ -21,7 +21,7 @@ export default function LoginPage() {
     <div className='flex min-h-screen items-center justify-center bg-black p-4'>
       <div className='w-full max-w-md space-y-8 rounded-xl border border-gray-800 bg-gray-900 p-8 shadow-lg'>
         <div className='text-center'>
-          <h2 className='mt-6 text-3xl font-extrabold text-white'>Log in to your account</h2>
+          <h2 className='mt-6 text-3xl font-extrabold text-white'>Iniciar sesión</h2>
         </div>
         <form
           className='mt-8 space-y-6'
@@ -49,7 +49,7 @@ export default function LoginPage() {
           <div className='space-y-4'>
             <div>
               <Label htmlFor='email' className='text-gray-300'>
-                Email address
+                Correo
               </Label>
               <Input
                 id='email'
@@ -62,7 +62,7 @@ export default function LoginPage() {
             </div>
             <div>
               <Label htmlFor='password' className='text-gray-300'>
-                Password
+                Contraseña
               </Label>
               <Input
                 id='password'
@@ -81,14 +81,14 @@ export default function LoginPage() {
             type='submit'
             className='w-full bg-white font-semibold text-gray-900 hover:bg-gray-200'
           >
-            Log in
+            Entrar
           </Button>
         </form>
         <div className='text-center'>
           <p className='text-sm text-gray-400'>
-            Don't have an account?{' '}
+            ¿No tienes una cuenta?{' '}
             <Link href='/signup' className='font-medium text-white hover:text-gray-200'>
-              Sign up
+              Registrarse
             </Link>
           </p>
         </div>

@@ -22,6 +22,8 @@ import { api } from '@packages/backend/convex/_generated/api'
 export default function DropdownUser() {
   const condos = useQuery(api.condos.getCondosByUserId, {})
 
+  const user = useQuery(api.users.currentUser, {})
+
   const isCollapsed = useSidebarStore((state) => state.isCollapsed)
   const { signOut } = useAuthActions()
   const router = useRouter()
@@ -39,7 +41,9 @@ export default function DropdownUser() {
               alt='User avatar'
               title='User settings'
             />
-            <span className={cn(isCollapsed && 'hidden')}>Julián</span>
+            <span className={cn('relative block max-w-24 truncate', isCollapsed && 'hidden')}>
+              {user?.name || user?.email}
+            </span>
           </div>
           <Ellipsis
             className={cn(

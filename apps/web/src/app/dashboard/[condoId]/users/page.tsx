@@ -66,9 +66,9 @@ export default function UsersPage() {
                     key={user._id}
                     className='border-t border-neutral-700 hover:bg-neutral-800'
                   >
-                    <TableCell className='font-medium'>{`${user.name} ${user.lastName || ''}`}</TableCell>
+                    <TableCell className='font-medium'>{`${user.name || 'Sin asignar'} ${user.lastName || ''}`}</TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.phone || user.units[0].phone}</TableCell>
+                    <TableCell>{user?.phone || user.units[0]?.phone || 'Sin teléfono'}</TableCell>
                     <TableCell>
                       {user.isOwner ? 'Propietario' : ''}
                       {user.isOwner && user.isTenant ? ' / ' : ''}

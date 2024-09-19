@@ -19,12 +19,12 @@ export default function AssignedUnit({ assignedUnit }: AssignedUnitProps) {
       <ScrollView className='flex-1 px-4'>
         <View className='py-4'>
           <Text className='mb-4 text-2xl font-bold text-indigo-700'>
-            {unit.propertyType === 'apartment' ? 'Apartamento' : 'Casa'} asignada:
+            {unit.propertyType === 'apartment' ? 'Apartamento asignado' : 'Casa asignada'} :
           </Text>
 
           <View className='mb-6 rounded-lg bg-white p-4 shadow-md'>
             <Text className='mb-2 text-lg font-semibold text-indigo-600'>
-              Información de la Unidad
+              Información de la propiedad
             </Text>
             <View className='space-y-2'>
               <Text className='text-gray-700'>
